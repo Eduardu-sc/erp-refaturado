@@ -1,1 +1,1 @@
-console.log("Projeto inicial");
+console.log('Projeto inicial')
