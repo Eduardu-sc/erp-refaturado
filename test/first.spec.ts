@@ -1,3 +1,3 @@
-test("Deve Passar", async () => {
-  expect(1).toBe(1);
-});
+test('Deve Passar', async () => {
+  expect(1).toBe(1)
+})
