@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ES2024"],
+    "lib": [
+      "ES2024"
+    ],
     "module": "nodenext",
     "target": "ES2024",
     "useDefineForClassFields": false,
@@ -11,11 +13,22 @@
     "noEmit": true,
     "experimentalDecorators": true,
     "allowImportingTsExtensions": true,
-    "types": ["node", "vitest/globals"],
+    "noImplicitAny": false,
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
     "paths": {
-      "@*": ["./src/*"],
+      "@*": [
+        "./src/*"
+      ],
     },
   },
-  "include": ["src", "test"],
-  "exclude": ["./dist"],
+  "include": [
+    "src",
+    "test"
+  ],
+  "exclude": [
+    "./dist"
+  ],
 }
