@@ -6,9 +6,9 @@
   "scripts": {
     "build": "tsup --tsconfig tsconfig.build.json src/main.ts",
     "start": "node dist/main.cjs",
-    "dev": "tsx --env-file .env.dev watch src/main.ts",
+    "dev": "tsx watch --env-file .env.dev  src/main.ts",
     "test": "vitest run --passWithNoTests",
-    "test:watch": "vitest --passWithNoTests",
+    "test:watch": "vitest --reporter=verbose --passWithNoTests",
     "prepare": "husky",
     "lint:fix": "eslint src/*.ts --fix",
     "db:migrate": "node --env-file=.env.dev ./node_modules/knex/bin/cli.js migrate:latest",
@@ -20,7 +20,10 @@
   "type": "module",
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.2.2",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/node": "^24.13.3",
+    "axios": "^1.19.0",
     "eslint": "^8",
     "eslint-plugin-simple-import-sort": "^14.0.0",
     "git-commit-msg-linter": "^5.0.9",
@@ -37,5 +40,9 @@
     "*.ts": [
       "npm run lint:fix"
     ]
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
   }
 }
