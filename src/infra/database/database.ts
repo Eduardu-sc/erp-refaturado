@@ -9,6 +9,7 @@ export const save = async (dto: any) => {
     [dto.codigo, dto.nome, dto.url],
   )
   connection.end()
+
   return result.insertId
 }
 export const list = async () => {
@@ -20,12 +21,11 @@ export const list = async () => {
   connection.end()
   return rows
 }
-
 export const getbyid = async (id: number) => {
   const connection = mysqlConnection.createPool(
     String(process.env.DATABASE_URL),
   )
-  console.log('passou')
+
   const [rows] = await connection.query<RowDataPacket[]>(
     `select * from banco where id= ?`,
     [id],
@@ -35,4 +35,25 @@ export const getbyid = async (id: number) => {
 
   connection.end()
   return bank
+}
+export const update = async (id: number, dto: any) => {
+  const connection = mysqlConnection.createPool(
+    String(process.env.DATABASE_URL),
+  )
+  await connection.execute<ResultSetHeader>(
+    `UPDATE banco
+     SET codigo = ?, nome = ?, url = ?
+     WHERE id = ?`,
+    [dto.codigo, dto.nome, dto.url, id],
+  )
+  connection.end()
+
+  return { id, ...dto }
+}
+export const deleta = async (id: number) => {
+  const connection = mysqlConnection.createPool(
+    String(process.env.DATABASE_URL),
+  )
+  await connection.query<RowDataPacket[]>(`delete from banco where id= ?`, [id])
+  connection.end()
 }
