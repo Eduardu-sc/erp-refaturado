@@ -10,7 +10,6 @@ app.get('/banco', async (request: Request, response: Response) => {
     String(process.env.DATABASE_URL),
   )
   const [rows] = await connection.query(`select * from banco`, [])
-
   response.status(200).json(rows)
 })
 app.get('/banco/:id', async (request: Request, response: Response) => {
