@@ -89,6 +89,7 @@ test('deve  alterar um banco (PUT /banco)', async () => {
   }
   const responseUpdate = await axios.put(`${url}/banco/${bankId}`, inputUpdate)
   const outPutUpdate = responseUpdate.data
+
   expect(responseUpdate.status).toBe(200)
   expect(outPutUpdate.id).toBe(bankId)
   expect(outPutUpdate.codigo).toBe(inputUpdate.codigo)

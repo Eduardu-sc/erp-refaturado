@@ -1,7 +1,7 @@
 import {
-  deleta,
   getbyid,
   list,
+  remove,
   save,
   update,
 } from '@infra/database/database.ts'
@@ -29,18 +29,19 @@ test('deve testar as integracao do banco', async () => {
   expect(bankData.url).toBe(existe.url)
 
   const outPutUpdate = {
+    id: bankData.id,
     codigo: '700',
     nome: 'novo teste',
     url: 'testenove.com.br',
   }
-  const bankUpdate = await update(bankData.id, outPutUpdate)
+  const bankUpdate = await update(outPutUpdate)
   expect(bankUpdate).toBeTruthy()
   expect(bankUpdate.id).toBe(bankData.id)
   expect(bankUpdate.codigo).toBe(outPutUpdate.codigo)
   expect(bankUpdate.nome).toBe(outPutUpdate.nome)
   expect(bankUpdate.url).toBe(outPutUpdate.url)
 
-  await deleta(bankUpdate.id)
+  await remove(bankUpdate.id)
   const bankDelete = await getbyid(bankUpdate.id)
   expect(bankDelete).toBeFalsy()
 })

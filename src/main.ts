@@ -1,10 +1,5 @@
-import {
-  deleta,
-  getbyid,
-  list,
-  save,
-  update,
-} from '@infra/database/database.ts'
+import { alteraBanco } from '@infra/database/alterarbanco.ts'
+import { getbyid, list, remove, save } from '@infra/database/database.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
 
@@ -35,21 +30,22 @@ app.post('/banco', async (request: Request, response: Response) => {
   response.status(201).json({ id, codigo, nome, url })
 })
 app.put('/banco/:id', async (request: Request, response: Response) => {
-  const { id } = request.params
-  const { codigo, nome, url } = request.body
+  const Bankid = request.params.id
+  const bankData = request.body
+  const input = {
+    id: Number(Bankid),
+    ...bankData,
+  }
+  const bankUpdate = await alteraBanco(input)
 
-  await update(Number(id), { codigo, nome, url })
   response.status(200).json({
-    id: Number(id),
-    codigo,
-    nome,
-    url,
+    ...bankUpdate,
   })
 })
 app.delete('/banco/:id', async (request: Request, response: Response) => {
   const { id } = request.params
 
-  await deleta(Number(id))
+  await remove(Number(id))
 
   response.status(200).json()
 })

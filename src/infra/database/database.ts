@@ -36,7 +36,7 @@ export const getbyid = async (id: number) => {
   connection.end()
   return bank
 }
-export const update = async (id: number, dto: any) => {
+export const update = async (dto: any) => {
   const connection = mysqlConnection.createPool(
     String(process.env.DATABASE_URL),
   )
@@ -44,16 +44,16 @@ export const update = async (id: number, dto: any) => {
     `UPDATE banco
      SET codigo = ?, nome = ?, url = ?
      WHERE id = ?`,
-    [dto.codigo, dto.nome, dto.url, id],
+    [dto.codigo, dto.nome, dto.url, dto.id],
   )
   connection.end()
 
-  return { id, ...dto }
+  return { ...dto }
 }
-export const deleta = async (id: number) => {
+export const remove = async (id: number) => {
   const connection = mysqlConnection.createPool(
     String(process.env.DATABASE_URL),
   )
-  await connection.query<RowDataPacket[]>(`delete from banco where id= ?`, [id])
+  await connection.query<any[]>(`delete from banco where id= ?`, [id])
   connection.end()
 }
