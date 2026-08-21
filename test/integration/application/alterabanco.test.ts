@@ -1,15 +1,17 @@
 import { alteraBanco } from '@infra/database/alterarbanco.ts'
-import { getbyid, remove, save } from '@infra/database/database.ts'
+import { BancoDAO } from '@infra/database/bancoDao.ts'
 
 test('deve  alterar um banco)', async () => {
+  const bancoDao = new BancoDAO()
+
   const bankCreate = {
     codigo: '555',
     nome: 'teste',
     url: 'teste4.com.br',
   }
-  const bankId = await save(bankCreate)
+  const bankId = await bancoDao.save(bankCreate)
 
-  const bankData = await getbyid(bankId)
+  const bankData = await bancoDao.getbyid(bankId)
   expect(bankData).toBeTruthy()
   expect(bankData.id).toBe(bankId)
   expect(bankData.codigo).toBe(bankCreate.codigo)
@@ -29,7 +31,7 @@ test('deve  alterar um banco)', async () => {
   expect(bankUpdate.nome).toBe(inputUpdate.nome)
   expect(bankUpdate.url).toBe(inputUpdate.url)
 
-  await remove(bankUpdate.id)
-  const bankDelete = await getbyid(bankId)
+  await bancoDao.remove(bankUpdate.id)
+  const bankDelete = await bancoDao.getbyid(bankId)
   expect(bankDelete).toBeFalsy()
 })

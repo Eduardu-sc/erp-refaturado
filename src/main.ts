@@ -1,5 +1,5 @@
 import { alteraBanco } from '@infra/database/alterarbanco.ts'
-import { getbyid, list, remove, save } from '@infra/database/database.ts'
+import { BancoDAO } from '@infra/database/bancoDao.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
 
@@ -7,13 +7,14 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.get('/banco', async (request: Request, response: Response) => {
-  const rows = await list()
+  const bancoDao = new BancoDAO()
+  const rows = await bancoDao.list()
   response.status(200).json(rows)
 })
 app.get('/banco/:id', async (request: Request, response: Response) => {
   const { id } = request.params
-
-  const rows = await getbyid(Number(id))
+  const bancoDao = new BancoDAO()
+  const rows = await bancoDao.getbyid(Number(id))
 
   if (!rows) {
     return response.status(404).json({
@@ -24,8 +25,8 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
 })
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
-
-  const id = await save({ codigo, nome, url })
+  const bancoDao = new BancoDAO()
+  const id = await bancoDao.save({ codigo, nome, url })
 
   response.status(201).json({ id, codigo, nome, url })
 })
@@ -44,8 +45,8 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
 })
 app.delete('/banco/:id', async (request: Request, response: Response) => {
   const { id } = request.params
-
-  await remove(Number(id))
+  const bancoDao = new BancoDAO()
+  await bancoDao.remove(Number(id))
 
   response.status(200).json()
 })
