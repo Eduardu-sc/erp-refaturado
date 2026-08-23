@@ -1,10 +1,13 @@
-import { alteraBanco } from '@infra/database/alterarbanco.ts'
+import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BancoDAO } from '@infra/database/bancoDao.ts'
 import Sinon from 'sinon'
-
-test('deve  alterar um banco)', async () => {
-  const bancoDao = new BancoDAO()
-
+let bankDTO: BancoDAO
+let alterarBanco: AlterarBanco
+beforeAll(() => {
+  bankDTO = new BancoDAO()
+  alterarBanco = new AlterarBanco(bankDTO)
+})
+test.only('deve  alterar um banco(use-case))', async () => {
   const bankCreate = {
     codigo: '555',
     nome: 'teste',
@@ -12,7 +15,7 @@ test('deve  alterar um banco)', async () => {
   }
   const BankIdTest = 1
   Sinon.stub(BancoDAO.prototype, 'save').resolves(BankIdTest)
-  const bankId = await bancoDao.save(bankCreate)
+  const bankId = await bankDTO.save(bankCreate)
 
   const getByIdStub = Sinon.stub(BancoDAO.prototype, 'getbyid').resolves({
     id: BankIdTest,
@@ -20,7 +23,7 @@ test('deve  alterar um banco)', async () => {
     nome: bankCreate.nome,
     url: bankCreate.url,
   })
-  const bankData = await bancoDao.getbyid(bankId)
+  const bankData = await bankDTO.getbyid(bankId)
 
   expect(bankData).toBeTruthy()
   expect(bankData.id).toBe(bankId)
@@ -36,7 +39,7 @@ test('deve  alterar um banco)', async () => {
   }
 
   Sinon.stub(BancoDAO.prototype, 'update').resolves(inputUpdate)
-  const bankUpdate = await alteraBanco(inputUpdate)
+  const bankUpdate = await alterarBanco.execute(inputUpdate)
   expect(bankUpdate).toBeTruthy()
   expect(bankUpdate.id).toBe(inputUpdate.id)
   expect(bankUpdate.codigo).toBe(inputUpdate.codigo)
@@ -44,10 +47,10 @@ test('deve  alterar um banco)', async () => {
   expect(bankUpdate.url).toBe(inputUpdate.url)
 
   Sinon.stub(BancoDAO.prototype, 'remove').resolves()
-  await bancoDao.remove(bankUpdate.id)
+  await bankDTO.remove(bankUpdate.id)
 
   getByIdStub.resolves(undefined)
-  const bankDelete = await bancoDao.getbyid(bankUpdate.id)
+  const bankDelete = await bankDTO.getbyid(bankUpdate.id)
   expect(bankDelete).toBeFalsy()
   Sinon.restore()
 })

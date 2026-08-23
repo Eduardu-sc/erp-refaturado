@@ -1,4 +1,4 @@
-import { alteraBanco } from '@infra/database/alterarbanco.ts'
+import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BancoDAO } from '@infra/database/bancoDao.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
@@ -31,13 +31,15 @@ app.post('/banco', async (request: Request, response: Response) => {
   response.status(201).json({ id, codigo, nome, url })
 })
 app.put('/banco/:id', async (request: Request, response: Response) => {
+  const banckDTO = new BancoDAO()
+  const alterar = new AlterarBanco(banckDTO)
   const Bankid = request.params.id
   const bankData = request.body
   const input = {
     id: Number(Bankid),
     ...bankData,
   }
-  const bankUpdate = await alteraBanco(input)
+  const bankUpdate = await alterar.execute(input)
 
   response.status(200).json({
     ...bankUpdate,
