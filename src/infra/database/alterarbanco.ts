@@ -1,9 +1,10 @@
-import { BancoDAO } from './bancoDao.ts'
+import { BankDAODataBase } from './bancoDao.ts'
 
 export class AlterarBanco {
-  constructor(private bankDao: BancoDAO) {}
+  constructor(private bankDao: BankDAODataBase) {}
   async execute(input: any) {
-    const bankUpdate = await this.bankDao.update(input)
+    await this.bankDao.update(input)
+    const bankUpdate = this.bankDao.getById(input.id)
     return bankUpdate
   }
 }

@@ -1,6 +1,14 @@
 import mysqlConnection from 'mysql2/promise'
 
-export class BancoDAO {
+export interface BancoDao {
+  save(dto: any): Promise<number>
+  list(): Promise<any[]>
+  getById(id: number): Promise<any>
+  update(dto: any): Promise<void>
+  remove(id: number): Promise<void>
+}
+
+export class BankDAODataBase implements BancoDao {
   async save(dto: any) {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
@@ -24,7 +32,7 @@ export class BancoDAO {
     return rows
   }
 
-  async getbyid(id: number) {
+  async getById(id: number) {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
@@ -51,8 +59,6 @@ export class BancoDAO {
       [dto.codigo, dto.nome, dto.url, dto.id],
     )
     connection.end()
-
-    return { ...dto }
   }
 
   async remove(id: number) {
