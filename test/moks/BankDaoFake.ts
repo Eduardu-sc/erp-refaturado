@@ -1,26 +1,26 @@
-import { BancoDao } from '@infra/database/bancoDao.ts'
+import { BancoDao, BankDao } from '@infra/database/bancoDao.ts'
 
-export class BankDaoMemory implements BancoDao {
-  private bankMemory: any[]
+export class BankDaoFake implements BancoDao {
+  private bankMemory: BankDao.BankDto[]
   constructor() {
     this.bankMemory = []
   }
 
-  async save(dto: any): Promise<number> {
+  async save(dto: BankDao.SaveDto): Promise<number> {
     const id = this.bankMemory.length + 1
     this.bankMemory.push({ id, ...dto })
     return id
   }
 
-  async list(): Promise<any[]> {
+  async list(): Promise<BankDao.BankDto[]> {
     return this.bankMemory
   }
 
-  async getById(id: number): Promise<any> {
+  async getById(id: number): Promise<BankDao.BankDto | undefined> {
     return this.bankMemory.find((item) => item.id === id)
   }
 
-  async update(dto: any): Promise<void> {
+  async update(dto: BankDao.UpdateDto): Promise<void> {
     this.bankMemory = this.bankMemory.map((banco) => {
       if (banco.id !== dto.id) {
         return banco

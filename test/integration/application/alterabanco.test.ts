@@ -2,11 +2,11 @@ import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 import Sinon from 'sinon'
 
-import { BankDaoMemory } from '../../moks/bankDaoMemory.ts'
+import { BankDaoFake } from '../../moks/BankDaoFake.ts'
 let bankDTO: BankDAODataBase
 let alterarBanco: AlterarBanco
 beforeAll(() => {
-  bankDTO = new BankDaoMemory()
+  bankDTO = new BankDaoFake()
   // bankDTO = new BankDAODataBase()
   alterarBanco = new AlterarBanco(bankDTO)
 })
@@ -22,13 +22,13 @@ test.only('deve  alterar um banco(use-case))', async () => {
   const bankData = await bankDTO.getById(bankId)
 
   expect(bankData).toBeTruthy()
-  expect(bankData.id).toBe(bankId)
-  expect(bankData.codigo).toBe(bankCreate.codigo)
-  expect(bankData.nome).toBe(bankCreate.nome)
-  expect(bankData.url).toBe(bankCreate.url)
+  expect(bankData?.id).toBe(bankId)
+  expect(bankData?.codigo).toBe(bankCreate.codigo)
+  expect(bankData?.nome).toBe(bankCreate.nome)
+  expect(bankData?.url).toBe(bankCreate.url)
 
   const inputUpdate = {
-    id: bankData.id,
+    id: bankId,
     codigo: '700',
     nome: 'update 3',
     url: 'update.com.br',
@@ -36,14 +36,14 @@ test.only('deve  alterar um banco(use-case))', async () => {
 
   const bankUpdate = await alterarBanco.execute(inputUpdate)
   expect(bankUpdate).toBeTruthy()
-  expect(bankUpdate.id).toBe(inputUpdate.id)
-  expect(bankUpdate.codigo).toBe(inputUpdate.codigo)
-  expect(bankUpdate.nome).toBe(inputUpdate.nome)
-  expect(bankUpdate.url).toBe(inputUpdate.url)
+  expect(bankUpdate?.id).toBe(inputUpdate.id)
+  expect(bankUpdate?.codigo).toBe(inputUpdate.codigo)
+  expect(bankUpdate?.nome).toBe(inputUpdate.nome)
+  expect(bankUpdate?.url).toBe(inputUpdate.url)
 
-  await bankDTO.remove(bankUpdate.id)
+  await bankDTO.remove(bankId)
 
-  const bankDelete = await bankDTO.getById(bankUpdate.id)
+  const bankDelete = await bankDTO.getById(bankId)
   expect(bankDelete).toBeFalsy()
   Sinon.restore()
 })

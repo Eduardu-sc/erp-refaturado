@@ -1,15 +1,34 @@
 import mysqlConnection from 'mysql2/promise'
 
+export namespace BankDao {
+  export type SaveDto = {
+    codigo: string
+    nome: string
+    url: string
+  }
+  export type BankDto = {
+    id: number
+    codigo: string
+    nome: string
+    url: string
+  }
+  export type UpdateDto = {
+    id: number
+    codigo: string
+    nome: string
+    url: string
+  }
+}
 export interface BancoDao {
-  save(dto: any): Promise<number>
-  list(): Promise<any[]>
-  getById(id: number): Promise<any>
-  update(dto: any): Promise<void>
+  save(dto: BankDao.SaveDto): Promise<number>
+  list(): Promise<BankDao.BankDto[]>
+  getById(id: number): Promise<BankDao.BankDto | undefined>
+  update(dto: BankDao.UpdateDto): Promise<void>
   remove(id: number): Promise<void>
 }
 
 export class BankDAODataBase implements BancoDao {
-  async save(dto: any) {
+  async save(dto: BankDao.SaveDto): Promise<number> {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
@@ -22,7 +41,7 @@ export class BankDAODataBase implements BancoDao {
     return result.insertId
   }
 
-  async list() {
+  async list(): Promise<BankDao.BankDto[]> {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
@@ -32,7 +51,7 @@ export class BankDAODataBase implements BancoDao {
     return rows
   }
 
-  async getById(id: number) {
+  async getById(id: number): Promise<BankDao.BankDto | undefined> {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
@@ -48,7 +67,7 @@ export class BankDAODataBase implements BancoDao {
     return bank
   }
 
-  async update(dto: any) {
+  async update(dto: BankDao.UpdateDto): Promise<void> {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
@@ -61,7 +80,7 @@ export class BankDAODataBase implements BancoDao {
     connection.end()
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<void> {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
