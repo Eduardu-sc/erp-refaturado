@@ -1,8 +1,8 @@
-import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
 import { GetBankList } from '@infra/database/GetBankList.ts'
+import { UpdateBank } from '@infra/database/UpdateBank.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
 
@@ -30,12 +30,12 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
   const usecase = new CreateBank(bancoDao)
-  const id = await usecase.execute({ codigo, nome, url })
+  const outPut = await usecase.execute({ codigo, nome, url })
 
-  response.status(201).json({ id, codigo, nome, url })
+  response.status(201).json(outPut)
 })
-app.put('/banco/:id', async (request: Request, response: Response) => {
-  const usecase = new AlterarBanco(bancoDao)
+app.put('/banco/:id', async (request: Resquest, response: Response) => {
+  const usecase = new UpdateBank(bancoDao)
   const Bankid = request.params.id
   const bankData = request.body
   const input = {

@@ -1,14 +1,13 @@
-import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
-import Sinon from 'sinon'
+import { UpdateBank } from '@infra/database/UpdateBank.ts'
 
 import { BankDaoFake } from '../../moks/BankDaoFake.ts'
 let bankDTO: BankDAODataBase
-let alterarBanco: AlterarBanco
+let stu: UpdateBank
 beforeAll(() => {
   bankDTO = new BankDaoFake()
   // bankDTO = new BankDAODataBase()
-  alterarBanco = new AlterarBanco(bankDTO)
+  stu = new UpdateBank(bankDTO)
 })
 test.only('deve  alterar um banco(use-case))', async () => {
   const bankCreate = {
@@ -34,7 +33,7 @@ test.only('deve  alterar um banco(use-case))', async () => {
     url: 'update.com.br',
   }
 
-  const bankUpdate = await alterarBanco.execute(inputUpdate)
+  const bankUpdate = await stu.execute(inputUpdate)
   expect(bankUpdate).toBeTruthy()
   expect(bankUpdate?.id).toBe(inputUpdate.id)
   expect(bankUpdate?.codigo).toBe(inputUpdate.codigo)
@@ -45,5 +44,4 @@ test.only('deve  alterar um banco(use-case))', async () => {
 
   const bankDelete = await bankDTO.getById(bankId)
   expect(bankDelete).toBeFalsy()
-  Sinon.restore()
 })

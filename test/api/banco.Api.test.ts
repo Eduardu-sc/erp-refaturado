@@ -59,6 +59,7 @@ test('deve  criar um banco (POST /banco)', async () => {
   }
   const responseCreate = await axios.post(`${url}/banco`, inputCreate)
   const outPutCreate = await responseCreate.data
+
   expect(responseCreate.status).toBe(201)
 
   const responseBank = await axios.get(`${url}/banco/${outPutCreate.id}`)

@@ -1,6 +1,6 @@
 import { BankDAODataBase } from './bancoDao.ts'
 
-export class AlterarBanco {
+export class UpdateBank {
   constructor(private bankDao: BankDAODataBase) {}
   async execute(input: any) {
     await this.bankDao.update(input)
