@@ -1,5 +1,6 @@
 import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
+import { GetBankById } from '@infra/database/GetBankById.ts'
 import { GetBankList } from '@infra/database/GetBankList.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
@@ -15,7 +16,9 @@ app.get('/banco', async (request: Request, response: Response) => {
 })
 app.get('/banco/:id', async (request: Request, response: Response) => {
   const { id } = request.params
-  const rows = await bancoDao.getById(Number(id))
+  const usecase = new GetBankById(bancoDao)
+
+  const rows = await usecase.execute(Number(id))
   if (!rows) {
     return response.status(404).json({
       message: 'Banco não encontrado',
