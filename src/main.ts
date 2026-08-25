@@ -1,5 +1,6 @@
 import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
+import { CreateBank } from '@infra/database/CreateBank.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
 import { GetBankList } from '@infra/database/GetBankList.ts'
 import cors from 'cors'
@@ -17,8 +18,8 @@ app.get('/banco', async (request: Request, response: Response) => {
 app.get('/banco/:id', async (request: Request, response: Response) => {
   const { id } = request.params
   const usecase = new GetBankById(bancoDao)
-
-  const rows = await usecase.execute(Number(id))
+  const inputID = { id }
+  const rows = await usecase.execute(inputID)
   if (!rows) {
     return response.status(404).json({
       message: 'Banco não encontrado',
@@ -28,7 +29,8 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
 })
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
-  const id = await bancoDao.save({ codigo, nome, url })
+  const usecase = new CreateBank(bancoDao)
+  const id = await usecase.execute({ codigo, nome, url })
 
   response.status(201).json({ id, codigo, nome, url })
 })

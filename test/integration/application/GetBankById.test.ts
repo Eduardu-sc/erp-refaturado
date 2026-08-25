@@ -15,7 +15,10 @@ test('deve retornar um banco (usecase)', async () => {
     url: 'teste5.com.br',
   }
   const bankId = await bancoDao.save(bankCreate)
-  const outPut = await stu.execute(bankId)
+  const inputId = {
+    id: bankId,
+  }
+  const outPut = await stu.execute(inputId)
 
   expect(outPut).toBeInstanceOf(Object)
 
