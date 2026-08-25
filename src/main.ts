@@ -1,21 +1,21 @@
 import { AlterarBanco } from '@infra/database/alterarbanco.ts'
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
+import { GetBankList } from '@infra/database/GetBankList.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
 
 const app = express()
 app.use(express.json())
 app.use(cors())
+const bancoDao = new BankDAODataBase()
 app.get('/banco', async (request: Request, response: Response) => {
-  const bancoDao = new BankDAODataBase()
-  const rows = await bancoDao.list()
+  const usecase = new GetBankList(bancoDao)
+  const rows = await usecase.execute()
   response.status(200).json(rows)
 })
 app.get('/banco/:id', async (request: Request, response: Response) => {
   const { id } = request.params
-  const bancoDao = new BankDAODataBase()
   const rows = await bancoDao.getById(Number(id))
-
   if (!rows) {
     return response.status(404).json({
       message: 'Banco não encontrado',
@@ -25,21 +25,19 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
 })
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
-  const bancoDao = new BankDAODataBase()
   const id = await bancoDao.save({ codigo, nome, url })
 
   response.status(201).json({ id, codigo, nome, url })
 })
 app.put('/banco/:id', async (request: Request, response: Response) => {
-  const banckDTO = new BankDAODataBase()
-  const alterar = new AlterarBanco(banckDTO)
+  const usecase = new AlterarBanco(bancoDao)
   const Bankid = request.params.id
   const bankData = request.body
   const input = {
     id: Number(Bankid),
     ...bankData,
   }
-  const bankUpdate = await alterar.execute(input)
+  const bankUpdate = await usecase.execute(input)
 
   response.status(200).json({
     ...bankUpdate,
@@ -47,7 +45,7 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
 })
 app.delete('/banco/:id', async (request: Request, response: Response) => {
   const { id } = request.params
-  const bancoDao = new BankDAODataBase()
+
   await bancoDao.remove(Number(id))
 
   response.status(200).json()
