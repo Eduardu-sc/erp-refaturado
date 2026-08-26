@@ -8,7 +8,7 @@ export class UpdateBank implements UseCase<
   constructor(private bankDao: BankDAODataBase) {}
   async execute(input: UpdateBank.Input): Promise<UpdateBank.Output> {
     await this.bankDao.update(input)
-    const bankUpdate = this.bankDao.getById(input.id)
+    const bankUpdate = await this.bankDao.getById(input.id)
     return bankUpdate
   }
 }
