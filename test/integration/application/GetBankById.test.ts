@@ -22,10 +22,10 @@ test('deve retornar um banco (usecase)', async () => {
 
   expect(outPut).toBeInstanceOf(Object)
 
-  expect(outPut.id).toBe(bankId)
-  expect(outPut.codigo).toBe(bankCreate.codigo)
-  expect(outPut.nome).toBe(bankCreate.nome)
-  expect(outPut.url).toBe(bankCreate.url)
+  expect(outPut?.id).toBe(bankId)
+  expect(outPut?.codigo).toBe(bankCreate.codigo)
+  expect(outPut?.nome).toBe(bankCreate.nome)
+  expect(outPut?.url).toBe(bankCreate.url)
 
   await bancoDao.remove(bankId)
 })

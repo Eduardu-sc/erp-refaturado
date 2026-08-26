@@ -16,10 +16,9 @@ app.get('/banco', async (request: Request, response: Response) => {
   response.status(200).json(rows)
 })
 app.get('/banco/:id', async (request: Request, response: Response) => {
-  const { id } = request.params
+  const bankId = Number(request.params.id)
   const usecase = new GetBankById(bancoDao)
-  const inputID = { id }
-  const rows = await usecase.execute(inputID)
+  const rows = await usecase.execute({ id: bankId })
   if (!rows) {
     return response.status(404).json({
       message: 'Banco não encontrado',

@@ -39,6 +39,7 @@ test('deve retornar um banco (GET /Banco/1)', async () => {
 
   const response = await axios.get(`${url}/banco/${bankId}`)
   const outPut = await response.data
+
   expect(response.status).toBe(200)
 
   expect(outPut).toBeInstanceOf(Object)
