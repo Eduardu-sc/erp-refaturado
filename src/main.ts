@@ -2,6 +2,7 @@ import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
 import { GetBankList } from '@infra/database/GetBankList.ts'
+import { RemoveBank } from '@infra/database/RemoveBank.ts'
 import { UpdateBank } from '@infra/database/UpdateBank.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
@@ -19,6 +20,7 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
   const bankId = Number(request.params.id)
   const usecase = new GetBankById(bancoDao)
   const rows = await usecase.execute({ id: bankId })
+
   if (!rows) {
     return response.status(404).json({
       message: 'Banco não encontrado',
@@ -48,9 +50,10 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
   })
 })
 app.delete('/banco/:id', async (request: Request, response: Response) => {
-  const { id } = request.params
+  const bankId = Number(request.params.id)
+  const usecase = new RemoveBank(bancoDao)
 
-  await bancoDao.remove(Number(id))
+  await usecase.execute({ id: bankId })
 
   response.status(200).json()
 })
