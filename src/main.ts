@@ -34,7 +34,7 @@ app.post('/banco', async (request: Request, response: Response) => {
 
   response.status(201).json(outPut)
 })
-app.put('/banco/:id', async (request: Resquest, response: Response) => {
+app.put('/banco/:id', async (request: Request, response: Response) => {
   const usecase = new UpdateBank(bancoDao)
   const Bankid = request.params.id
   const bankData = request.body
