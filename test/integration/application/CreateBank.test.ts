@@ -11,7 +11,7 @@ beforeAll(() => {
 test('deve  criar um banco (usecase)', async () => {
   const inputCreate = {
     codigo: '555',
-    nome: 'teste',
+    nome: 'teste test',
     url: 'teste4.com.br',
   }
   const outPut = await stu.execute(inputCreate)
@@ -24,3 +24,17 @@ test('deve  criar um banco (usecase)', async () => {
 
   await bancoDao.remove(outPut.id)
 })
+test.each(['', undefined, null])(
+  'Não deve  criar um banco nome invalido %s (usecase)',
+  async (rawName: any) => {
+    const inputCreate = {
+      codigo: '555',
+      nome: rawName,
+      url: 'teste4.com.br',
+    }
+     await expect( stu.execute(inputCreate)).rejects.toThrow('Nome invalido')
+
+
+
+  },
+)

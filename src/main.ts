@@ -30,18 +30,27 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
 })
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
-  if (!nome) {
-    return response.status(422).json({ message: 'Banco invalido' })
-  }
+
+ try{
+
   const usecase = new CreateBank(bancoDao)
   const outPut = await usecase.execute({ codigo, nome, url })
 
-  return response.status(201).json(outPut)
+   return response.status(201).json(outPut)
+ } catch (error: any) {
+
+   return response.status(422).json({message:error?.message})
+
+ }
 })
 app.put('/banco/:id', async (request: Request, response: Response) => {
+  const bankData = request.body
   const usecase = new UpdateBank(bancoDao)
   const Bankid = request.params.id
-  const bankData = request.body
+
+  if (!bankData.nome || !bankData.nome.match(/^.+\s.+$/)) {
+    return response.status(422).json({ message: 'Nome invalido' })
+  }
   const input = {
     id: Number(Bankid),
     ...bankData,
