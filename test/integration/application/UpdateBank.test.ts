@@ -45,8 +45,8 @@ test('deve  alterar um banco(use-case))', async () => {
   const bankDelete = await bankDAO.getById(bankId)
   expect(bankDelete).toBeFalsy()
 })
-test.only.each(['Test',])(
-'nao deve  alterar um banco com nome invalido (usecase)',
+test.each(['', undefined, null, 'Test'])(
+  'nao deve  alterar um banco com Nome invalido (usecase)',
   async (rawName: any) => {
     const bankCreate = {
       codigo: '555',
@@ -60,9 +60,29 @@ test.only.each(['Test',])(
       nome: rawName,
       url: 'teste3.com.br',
     }
-    await expect( stu.execute(inputUpdate)).rejects.toThrow('Nome invalido')
+    await expect(stu.execute(inputUpdate)).rejects.toThrow('Nome invalido')
 
     await bankDAO.remove(bankId)
+  },
+)
+test.each(['', undefined, null, '1', '12', 'AAA'])(
+  'nao deve  alterar um banco com Codigo invalido (usecase)',
+  async (invalidCode: any) => {
+    const bankCreate = {
+      codigo: '555',
+      nome: 'Teste teste',
+      url: 'teste4.com.br',
+    }
+    const bankId = await bankDAO.save(bankCreate)
 
+    const inputUpdate = {
+      id: bankId,
+      codigo: invalidCode,
+      nome: 'teste teste',
+      url: 'teste3.com.br',
+    }
+    await expect(stu.execute(inputUpdate)).rejects.toThrow('Codigo invalido')
+
+    await bankDAO.remove(bankId)
   },
 )

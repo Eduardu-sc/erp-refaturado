@@ -24,7 +24,7 @@ test('deve  criar um banco (usecase)', async () => {
 
   await bancoDao.remove(outPut.id)
 })
-test.each(['', undefined, null,'Test'])(
+test.each(['', undefined, null, 'Test'])(
   'Não deve  criar um banco nome invalido %s (usecase)',
   async (rawName: any) => {
     const inputCreate = {
@@ -32,9 +32,17 @@ test.each(['', undefined, null,'Test'])(
       nome: rawName,
       url: 'teste4.com.br',
     }
-     await expect( stu.execute(inputCreate)).rejects.toThrow('Nome invalido')
-
-
-
+    await expect(stu.execute(inputCreate)).rejects.toThrow('Nome invalido')
+  },
+)
+test.each(['', undefined, null, '1', '12', 'AAA'])(
+  'Não deve  criar um banco codigo invalido %s (usecase)',
+  async (invalidCode: any) => {
+    const inputCreate = {
+      codigo: invalidCode,
+      nome: 'Test teste',
+      url: 'teste4.com.br',
+    }
+    await expect(stu.execute(inputCreate)).rejects.toThrow('Codigo invalido')
   },
 )

@@ -8,6 +8,5 @@ module.exports = {
     'no-useless-constructor': 'off',
     '@typescript-eslint/no-namespace': 'off',
     'no-use-before-define': 'off',
-    'prettier/prettier': 'off',
   },
 }

@@ -75,7 +75,7 @@ test('deve  criar um banco (POST /banco)', async () => {
   const responseDelete = await axios.delete(`${url}/banco/${bankData.id}`)
   expect(responseDelete.status).toBe(200)
 })
-test.each(['', undefined, null,'Test'])(
+test.each(['', undefined, null, 'Test'])(
   'Não deve  criar um banco nome invalido %s (POST /banco)',
   async (rawName: any) => {
     const inputCreate = {
@@ -125,7 +125,7 @@ test('deve  alterar um banco (PUT /banco)', async () => {
   const responseDelete = await axios.delete(`${url}/banco/${bankData.id}`)
   expect(responseDelete.status).toBe(200)
 })
-test.each(['Test',])(
+test.each(['Test'])(
   'nao deve  alterar um banco com nome invalido (PUT /banco)',
   async (rawName: any) => {
     const bankCreate = {
@@ -148,7 +148,6 @@ test.each(['Test',])(
     expect(responseUpdate.status).toBe(422)
     const outPutUpdate = responseUpdate.data
     expect(outPutUpdate.message).toBe('Nome invalido')
-
 
     const responseDelete = await axios.delete(`${url}/banco/${bankId}`)
     expect(responseDelete.status).toBe(200)

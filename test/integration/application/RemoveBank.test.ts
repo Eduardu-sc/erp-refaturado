@@ -17,5 +17,5 @@ test('deve  deletar um banco (DELETE /banco)', async () => {
   }
   const bankid = await bankDao.save(inputCreate)
 
-  stu.execute({id: bankid })
+  stu.execute({ id: bankid })
 })

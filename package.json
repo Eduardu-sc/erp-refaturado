@@ -24,6 +24,8 @@
     "@types/express": "^5.0.6",
     "@types/node": "^24.13.3",
     "@types/sinon": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.68.0",
+    "@typescript-eslint/parser": "^8.68.0",
     "axios": "^1.19.0",
     "eslint": "^8",
     "eslint-plugin-simple-import-sort": "^14.0.0",
