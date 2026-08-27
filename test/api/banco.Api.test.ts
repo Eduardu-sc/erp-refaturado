@@ -75,6 +75,21 @@ test('deve  criar um banco (POST /banco)', async () => {
   const responseDelete = await axios.delete(`${url}/banco/${bankData.id}`)
   expect(responseDelete.status).toBe(200)
 })
+test.each(['', undefined, null])(
+  'Não deve  criar um banco invalido %s (POST /banco)',
+  async (rawName: any) => {
+    const inputCreate = {
+      codigo: '555',
+      nome: rawName,
+      url: 'teste4.com.br',
+    }
+    const responseCreate = await axios.post(`${url}/banco`, inputCreate)
+    expect(responseCreate.status).toBe(422)
+    const outPutCreate = await responseCreate.data
+    console.log(outPutCreate, 'code', responseCreate.status)
+    expect(outPutCreate.message).toBe('Banco invalido')
+  },
+)
 test('deve  alterar um banco (PUT /banco)', async () => {
   const bankCreate = {
     codigo: '555',

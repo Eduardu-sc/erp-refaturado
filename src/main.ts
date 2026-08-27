@@ -30,10 +30,13 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
 })
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
+  if (!nome) {
+    return response.status(422).json({ message: 'Banco invalido' })
+  }
   const usecase = new CreateBank(bancoDao)
   const outPut = await usecase.execute({ codigo, nome, url })
 
-  response.status(201).json(outPut)
+  return response.status(201).json(outPut)
 })
 app.put('/banco/:id', async (request: Request, response: Response) => {
   const usecase = new UpdateBank(bancoDao)
