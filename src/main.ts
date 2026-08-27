@@ -54,6 +54,9 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
       ...bankUpdate,
     })
   } catch (error: any) {
+    if (error?.message === 'Banco nao localizado') {
+      return response.status(404).json({ message: error?.message })
+    }
     return response.status(422).json({ message: error?.message })
   }
 })

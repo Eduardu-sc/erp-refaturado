@@ -7,6 +7,10 @@ export class UpdateBank implements UseCase<
 > {
   constructor(private bankDao: BankDAODataBase) {}
   async execute(input: UpdateBank.Input): Promise<UpdateBank.Output> {
+    const bank = await this.bankDao.getById(input.id)
+    if (!bank) {
+      throw new Error('Banco nao localizado')
+    }
     if (!input.nome || !input.nome.match(/^.+\s.+$/)) {
       throw new Error('Nome invalido')
     }
@@ -17,8 +21,7 @@ export class UpdateBank implements UseCase<
     ) {
       throw new Error('Codigo invalido')
     }
-    const bank = await this.bankDao.getById(input.id)
-    if (!bank) throw new Error('Banco nao localizado')
+
     const bankUpdate = { ...bank, ...input }
     await this.bankDao.update(bankUpdate)
 

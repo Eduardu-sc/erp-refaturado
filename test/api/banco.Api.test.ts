@@ -153,6 +153,19 @@ test.each(['Test'])(
     expect(responseDelete.status).toBe(200)
   },
 )
+test('nao deve  alterar um banco que nao existe (PUT /banco)', async (rawName: any) => {
+  const bankId = 99_999_99
+  const inputUpdate = {
+    codigo: '555',
+    nome: rawName,
+    url: 'teste3.com.br',
+  }
+  const responseUpdate = await axios.put(`${url}/banco/${bankId}`, inputUpdate)
+
+  expect(responseUpdate.status).toBe(404)
+  const outPutUpdate = responseUpdate.data
+  expect(outPutUpdate.message).toBe('Banco nao localizado')
+})
 test('deve  deletar um banco (DELETE /banco)', async () => {
   const inputCreate = {
     codigo: '555',
