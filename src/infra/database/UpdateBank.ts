@@ -7,6 +7,9 @@ export class UpdateBank implements UseCase<
 > {
   constructor(private bankDao: BankDAODataBase) {}
   async execute(input: UpdateBank.Input): Promise<UpdateBank.Output> {
+    if (!input.nome || !input.nome.match(/^.+\s.+$/)) {
+      throw new Error( 'Nome invalido' )
+    }
     await this.bankDao.update(input)
     const bankUpdate = await this.bankDao.getById(input.id)
     return bankUpdate

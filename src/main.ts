@@ -47,19 +47,18 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
   const bankData = request.body
   const usecase = new UpdateBank(bancoDao)
   const Bankid = request.params.id
-
-  if (!bankData.nome || !bankData.nome.match(/^.+\s.+$/)) {
-    return response.status(422).json({ message: 'Nome invalido' })
-  }
-  const input = {
-    id: Number(Bankid),
-    ...bankData,
-  }
-  const bankUpdate = await usecase.execute(input)
-
-  response.status(200).json({
-    ...bankUpdate,
-  })
+  try {
+    const input = {
+      id: Number(Bankid),
+      ...bankData,
+    }
+    const bankUpdate = await usecase.execute(input)
+         response.status(200).json({
+      ...bankUpdate,
+    })
+  } catch(error:any) {
+return response.status(422).json({message:error?.message})
+}
 })
 app.delete('/banco/:id', async (request: Request, response: Response) => {
   const bankId = Number(request.params.id)

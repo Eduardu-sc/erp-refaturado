@@ -24,7 +24,7 @@ test('deve  criar um banco (usecase)', async () => {
 
   await bancoDao.remove(outPut.id)
 })
-test.each(['', undefined, null])(
+test.each(['', undefined, null,'Test'])(
   'Não deve  criar um banco nome invalido %s (usecase)',
   async (rawName: any) => {
     const inputCreate = {

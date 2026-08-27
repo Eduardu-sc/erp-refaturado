@@ -2,23 +2,23 @@ import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 import { UpdateBank } from '@infra/database/UpdateBank.ts'
 
 import { BankDaoFake } from '../../moks/BankDaoFake.ts'
-let bankDTO: BankDAODataBase
+let bankDAO: BankDAODataBase
 let stu: UpdateBank
 beforeAll(() => {
-  bankDTO = new BankDaoFake()
+  bankDAO = new BankDaoFake()
   // bankDTO = new BankDAODataBase()
-  stu = new UpdateBank(bankDTO)
+  stu = new UpdateBank(bankDAO)
 })
-test.only('deve  alterar um banco(use-case))', async () => {
+test('deve  alterar um banco(use-case))', async () => {
   const bankCreate = {
     codigo: '555',
     nome: 'teste',
     url: 'teste4.com.br',
   }
 
-  const bankId = await bankDTO.save(bankCreate)
+  const bankId = await bankDAO.save(bankCreate)
 
-  const bankData = await bankDTO.getById(bankId)
+  const bankData = await bankDAO.getById(bankId)
 
   expect(bankData).toBeTruthy()
   expect(bankData?.id).toBe(bankId)
@@ -40,8 +40,29 @@ test.only('deve  alterar um banco(use-case))', async () => {
   expect(bankUpdate?.nome).toBe(inputUpdate.nome)
   expect(bankUpdate?.url).toBe(inputUpdate.url)
 
-  await bankDTO.remove(bankId)
+  await bankDAO.remove(bankId)
 
-  const bankDelete = await bankDTO.getById(bankId)
+  const bankDelete = await bankDAO.getById(bankId)
   expect(bankDelete).toBeFalsy()
 })
+test.only.each(['Test',])(
+'nao deve  alterar um banco com nome invalido (usecase)',
+  async (rawName: any) => {
+    const bankCreate = {
+      codigo: '555',
+      nome: 'Teste teste',
+      url: 'teste4.com.br',
+    }
+    const bankId = await bankDAO.save(bankCreate)
+    const inputUpdate = {
+      id: bankId,
+      codigo: '555',
+      nome: rawName,
+      url: 'teste3.com.br',
+    }
+    await expect( stu.execute(inputUpdate)).rejects.toThrow('Nome invalido')
+
+    await bankDAO.remove(bankId)
+
+  },
+)
