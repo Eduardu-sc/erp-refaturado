@@ -31,17 +31,14 @@ app.get('/banco/:id', async (request: Request, response: Response) => {
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
 
- try{
+  try {
+    const usecase = new CreateBank(bancoDao)
+    const outPut = await usecase.execute({ codigo, nome, url })
 
-  const usecase = new CreateBank(bancoDao)
-  const outPut = await usecase.execute({ codigo, nome, url })
-
-   return response.status(201).json(outPut)
- } catch (error: any) {
-
-   return response.status(422).json({message:error?.message})
-
- }
+    return response.status(201).json(outPut)
+  } catch (error: any) {
+    return response.status(422).json({ message: error?.message })
+  }
 })
 app.put('/banco/:id', async (request: Request, response: Response) => {
   const bankData = request.body
@@ -53,12 +50,12 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
       ...bankData,
     }
     const bankUpdate = await usecase.execute(input)
-         response.status(200).json({
+    response.status(200).json({
       ...bankUpdate,
     })
-  } catch(error:any) {
-return response.status(422).json({message:error?.message})
-}
+  } catch (error: any) {
+    return response.status(422).json({ message: error?.message })
+  }
 })
 app.delete('/banco/:id', async (request: Request, response: Response) => {
   const bankId = Number(request.params.id)

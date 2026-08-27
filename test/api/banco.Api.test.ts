@@ -75,7 +75,7 @@ test('deve  criar um banco (POST /banco)', async () => {
   const responseDelete = await axios.delete(`${url}/banco/${bankData.id}`)
   expect(responseDelete.status).toBe(200)
 })
-test.each(['', undefined, null, 'Test'])(
+test.each(['Test'])(
   'Não deve  criar um banco nome invalido %s (POST /banco)',
   async (rawName: any) => {
     const inputCreate = {

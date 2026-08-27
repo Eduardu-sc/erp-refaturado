@@ -17,8 +17,11 @@ export class UpdateBank implements UseCase<
     ) {
       throw new Error('Codigo invalido')
     }
-    await this.bankDao.update(input)
-    const bankUpdate = await this.bankDao.getById(input.id)
+    const bank = await this.bankDao.getById(input.id)
+    if (!bank) throw new Error('Banco nao localizado')
+    const bankUpdate = { ...bank, ...input }
+    await this.bankDao.update(bankUpdate)
+
     return bankUpdate
   }
 }

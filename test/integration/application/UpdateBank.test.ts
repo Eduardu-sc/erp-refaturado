@@ -86,3 +86,12 @@ test.each(['', undefined, null, '1', '12', 'AAA'])(
     await bankDAO.remove(bankId)
   },
 )
+test('nao deve  alterar um banco que nao existe (usecase)', async () => {
+  const inputUpdate = {
+    id: 9_999_99,
+    codigo: '555',
+    nome: 'teste teste',
+    url: 'teste3.com.br',
+  }
+  await expect(stu.execute(inputUpdate)).rejects.toThrow('Banco nao localizado')
+})
