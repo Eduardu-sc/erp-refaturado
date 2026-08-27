@@ -9,8 +9,9 @@ beforeAll(() => {
 })
 
 test('deve  criar um banco (usecase)', async () => {
+  const fakeCode = `${Math.random()}`.substring(2, 5)
   const inputCreate = {
-    codigo: '555',
+    codigo: fakeCode,
     nome: 'teste test',
     url: 'teste4.com.br',
   }
@@ -47,9 +48,9 @@ test.each(['', undefined, null, '1', '12', 'AAA'])(
   },
 )
 test('nao deve  criar um banco existente (usecase)', async () => {
-  const newCodigo = '999'
+  const fakeCode = `${Math.random()}`.substring(2, 5)
   const inputCreate = {
-    codigo: newCodigo,
+    codigo: fakeCode,
     nome: 'teste test',
     url: 'teste4.com.br',
   }
@@ -57,7 +58,7 @@ test('nao deve  criar um banco existente (usecase)', async () => {
   const bankId = await bancoDao.save(inputCreate)
 
   const inputCreate2 = {
-    codigo: newCodigo,
+    codigo: fakeCode,
     nome: 'teste test',
     url: 'teste4.com.br',
   }

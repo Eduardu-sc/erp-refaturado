@@ -69,6 +69,9 @@ export class BankDAODataBase implements BancoDao {
   }
 
   async getById(id: number): Promise<BankDao.BankDto | undefined> {
+    if (isNaN(id)) {
+      throw new Error('ID do banco e invalido')
+    }
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
@@ -98,6 +101,9 @@ export class BankDAODataBase implements BancoDao {
   }
 
   async remove(id: number): Promise<void> {
+    if (isNaN(id)) {
+      throw new Error('ID do banco e invalido')
+    }
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
