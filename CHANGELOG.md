@@ -1,3 +1,10 @@
+## [0.3.0](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.2.0...v0.3.0) (2026-08-28)
+
+
+### Features
+
+* **banco:** garantido que banco nao seja inserido com codigo duplicado ([ce46624](https://github.com/Eduardu-sc/erp-refaturado/commit/ce4662436ba059d52b05c544f354b71e1e0c195d))
+
 ## [0.2.0](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.11...v0.2.0) (2026-08-27)
 
 
@@ -13,6 +20,4 @@
 ## [0.1.10](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.9...v0.1.10) (2026-08-26)
 
 ## [0.1.9](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.8...v0.1.9) (2026-08-26)
-
-## [0.1.8](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.7...v0.1.8) (2026-08-25)
 
