@@ -18,6 +18,10 @@ export class CreateBank implements UseCase<
       throw new Error('Codigo invalido')
     }
 
+    const bancoExiste = await this.bankDao.getByCode(input.codigo)
+    if (bancoExiste) {
+      throw new Error('Banco ja existe')
+    }
     const bankId = await this.bankDao.save(input)
     return {
       id: bankId,

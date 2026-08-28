@@ -46,3 +46,23 @@ test.each(['', undefined, null, '1', '12', 'AAA'])(
     await expect(stu.execute(inputCreate)).rejects.toThrow('Codigo invalido')
   },
 )
+test('nao deve  criar um banco existente (usecase)', async () => {
+  const newCodigo = '999'
+  const inputCreate = {
+    codigo: newCodigo,
+    nome: 'teste test',
+    url: 'teste4.com.br',
+  }
+
+  const bankId = await bancoDao.save(inputCreate)
+
+  const inputCreate2 = {
+    codigo: newCodigo,
+    nome: 'teste test',
+    url: 'teste4.com.br',
+  }
+
+  await expect(stu.execute(inputCreate2)).rejects.toThrow('Banco ja existe')
+
+  await bancoDao.remove(bankId)
+})

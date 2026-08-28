@@ -25,9 +25,26 @@ export interface BancoDao {
   getById(id: number): Promise<BankDao.BankDto | undefined>
   update(dto: BankDao.UpdateDto): Promise<void>
   remove(id: number): Promise<void>
+  getByCode(codigo: string): Promise<BankDao.BankDto | undefined>
 }
 
 export class BankDAODataBase implements BancoDao {
+  async getByCode(codigo: string): Promise<BankDao.BankDto | undefined> {
+    const connection = mysqlConnection.createPool(
+      String(process.env.DATABASE_URL),
+    )
+
+    const [rows] = await connection.query<any[]>(
+      `select * from banco where codigo= ? LIMIT 1`,
+      [codigo],
+    )
+
+    const bank = rows[0]
+
+    connection.end()
+    return bank
+  }
+
   async save(dto: BankDao.SaveDto): Promise<number> {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
