@@ -6,6 +6,10 @@ export class BankDaoFake implements BancoDao {
     this.bankMemory = []
   }
 
+  async getByName(name: string): Promise<BankDao.BankDto | undefined> {
+    return this.bankMemory.find((item) => item.nome === name)
+  }
+
   async getByCode(codigo: string): Promise<BankDao.BankDto | undefined> {
     return this.bankMemory.find((item) => item.codigo === codigo)
   }

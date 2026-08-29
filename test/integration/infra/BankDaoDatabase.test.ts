@@ -136,6 +136,27 @@ test('deve buscar um banco por codigo', async () => {
 
   await bankDao.remove(bankId)
 })
+test('deve buscar um banco por nome', async () => {
+  const fakeCode = `${Math.random()}`.substring(2, 5)
+  const fakeName = `name ${Math.random()}`
+  const input = {
+    codigo: fakeCode,
+    nome: fakeName,
+    url: 'buscar.com.br',
+  }
+
+  const bankId = await bankDao.save(input)
+
+  const bankData = await bankDao.getByName(input.nome)
+
+  expect(bankData).toBeTruthy()
+  expect(bankData?.id).toBe(bankId)
+  expect(bankData?.codigo).toBe(input.codigo)
+  expect(bankData?.nome).toBe(input.nome)
+  expect(bankData?.url).toBe(input.url)
+
+  await bankDao.remove(bankId)
+})
 test('deve lançar um erro se Id nao for um numero ao remover', async () => {
   await expect(bankDao.remove('aaa' as any)).rejects.toThrow(
     'ID do banco e invalido',

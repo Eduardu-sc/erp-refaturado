@@ -1,10 +1,12 @@
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 
+import { BankDaoFake } from '../../moks/BankDaoFake.ts'
+
 let bancoDao: BankDAODataBase
 let stu: CreateBank
 beforeAll(() => {
-  bancoDao = new BankDAODataBase()
+  bancoDao = new BankDaoFake()
   stu = new CreateBank(bancoDao)
 })
 
@@ -47,7 +49,7 @@ test.each(['', undefined, null, '1', '12', 'AAA'])(
     await expect(stu.execute(inputCreate)).rejects.toThrow('Codigo invalido')
   },
 )
-test('nao deve  criar um banco existente (usecase)', async () => {
+test('nao deve  criar um banco com CODIGO existente (usecase)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const inputCreate = {
     codigo: fakeCode,
@@ -63,7 +65,32 @@ test('nao deve  criar um banco existente (usecase)', async () => {
     url: 'teste4.com.br',
   }
 
-  await expect(stu.execute(inputCreate2)).rejects.toThrow('Banco ja existe')
+  await expect(stu.execute(inputCreate2)).rejects.toThrow(
+    'Codigo Banco ja existe',
+  )
+
+  await bancoDao.remove(bankId)
+})
+test('nao deve  criar um banco com NOME existente (usecase)', async () => {
+  const fakeCode = `${Math.random()}`.substring(2, 5)
+  const fakeName = `name ${Math.random()}`
+  const inputCreate = {
+    codigo: fakeCode,
+    nome: fakeName,
+    url: 'teste4.com.br',
+  }
+
+  const bankId = await bancoDao.save(inputCreate)
+  const fakeCode2 = `${Math.random()}`.substring(2, 5)
+  const inputCreate2 = {
+    codigo: fakeCode2,
+    nome: fakeName,
+    url: 'teste4.com.br',
+  }
+
+  await expect(stu.execute(inputCreate2)).rejects.toThrow(
+    'Nome Banco ja existe',
+  )
 
   await bancoDao.remove(bankId)
 })

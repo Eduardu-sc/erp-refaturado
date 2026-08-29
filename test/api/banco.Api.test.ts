@@ -4,9 +4,10 @@ const url = 'http://localhost:3001'
 
 test('deve retornar a lista de bancos (GET /Banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
+  const fakeName = `name ${Math.random()}`
   const bankCreate = {
     codigo: fakeCode,
-    nome: 'teste teste',
+    nome: fakeName,
     url: 'teste5.com.br',
   }
   const responseCreate = await axios.post(`${url}/banco`, bankCreate)
@@ -30,9 +31,10 @@ test('deve retornar a lista de bancos (GET /Banco)', async () => {
 })
 test('deve retornar um banco (GET /Banco/1)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
+  const fakeName = `name ${Math.random()}`
   const bankCreate = {
     codigo: fakeCode,
-    nome: 'teste teste',
+    nome: fakeName,
     url: 'teste5.com.br',
   }
   const responseCreate = await axios.post(`${url}/banco`, bankCreate)
@@ -56,9 +58,10 @@ test('deve retornar um banco (GET /Banco/1)', async () => {
 })
 test('deve  criar um banco (POST /banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
+  const fakeName = `name ${Math.random()}`
   const inputCreate = {
     codigo: fakeCode,
-    nome: 'teste teste',
+    nome: fakeName,
     url: 'teste4.com.br',
   }
   const responseCreate = await axios.post(`${url}/banco`, inputCreate)
@@ -96,9 +99,10 @@ test.each(['Test'])(
 )
 test('deve  alterar um banco (PUT /banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
+  const fakeName = `name ${Math.random()}`
   const bankCreate = {
     codigo: fakeCode,
-    nome: 'teste teste',
+    nome: fakeName,
     url: 'teste4.com.br',
   }
   const responseCreate = await axios.post(`${url}/banco`, bankCreate)
@@ -134,36 +138,43 @@ test.each(['Test'])(
   'nao deve  alterar um banco com nome invalido (PUT /banco)',
   async (rawName: any) => {
     const fakeCode = `${Math.random()}`.substring(2, 5)
+    const fakeName = `name ${Math.random()}`
     const bankCreate = {
       codigo: fakeCode,
-      nome: 'teste teste',
+      nome: fakeName,
       url: 'teste4.com.br',
     }
     const responseCreate = await axios.post(`${url}/banco`, bankCreate)
+
     const outPutCreate = await responseCreate.data
     const bankId = await outPutCreate.id
+
     const inputUpdate = {
-      codigo: '555',
+      codigo: fakeCode,
       nome: rawName,
       url: 'teste3.com.br',
     }
+
     const responseUpdate = await axios.put(
       `${url}/banco/${bankId}`,
       inputUpdate,
     )
+
     expect(responseUpdate.status).toBe(422)
     const outPutUpdate = responseUpdate.data
+
     expect(outPutUpdate.message).toBe('Nome invalido')
 
     const responseDelete = await axios.delete(`${url}/banco/${bankId}`)
     expect(responseDelete.status).toBe(200)
   },
 )
-test('nao deve  alterar um banco que nao existe (PUT /banco)', async (rawName: any) => {
-  const bankId = 99_999_99
+test('nao deve  alterar um banco que nao existe (PUT /banco)', async () => {
+  const bankId = 9_999_99
+
   const inputUpdate = {
     codigo: '555',
-    nome: rawName,
+    nome: 'rawName teste',
     url: 'teste3.com.br',
   }
   const responseUpdate = await axios.put(`${url}/banco/${bankId}`, inputUpdate)
@@ -174,9 +185,10 @@ test('nao deve  alterar um banco que nao existe (PUT /banco)', async (rawName: a
 })
 test('deve  deletar um banco (DELETE /banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
+  const fakeName = `name ${Math.random()}`
   const inputCreate = {
     codigo: fakeCode,
-    nome: 'teste teste',
+    nome: fakeName,
     url: 'teste4.com.br',
   }
   const responseCreate = await axios.post(`${url}/banco`, inputCreate)
