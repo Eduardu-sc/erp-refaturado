@@ -1,3 +1,5 @@
+## [0.3.1](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.3.0...v0.3.1) (2026-08-29)
+
 ## [0.3.0](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.2.0...v0.3.0) (2026-08-28)
 
 
@@ -18,6 +20,4 @@
 ## [0.1.11](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.10...v0.1.11) (2026-08-27)
 
 ## [0.1.10](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.9...v0.1.10) (2026-08-26)
-
-## [0.1.9](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.8...v0.1.9) (2026-08-26)
 
