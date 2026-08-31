@@ -31,6 +31,15 @@ export class UpdateBank implements UseCase<
         )
       }
     }
+    if (bank.nome !== input.nome) {
+      const bankSecundario = await this.bankDao.getByName(input.nome)
+
+      if (bankSecundario) {
+        throw new Error(
+          'nao e possivel alterar o banco para um Nome ja existente',
+        )
+      }
+    }
 
     const bankUpdate = { ...bank, ...input }
     await this.bankDao.update(bankUpdate)

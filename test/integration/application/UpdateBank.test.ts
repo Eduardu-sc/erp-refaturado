@@ -127,3 +127,31 @@ test('nao deve alterar um banco para um CODIGO existente (use-case))', async () 
   await bankDAO.remove(firstbankId)
   await bankDAO.remove(secondBankId)
 })
+test('nao deve alterar um banco para um NOME existente (use-case))', async () => {
+  const firstBank = {
+    codigo: '553',
+    nome: 'teste',
+    url: 'teste4.com.br',
+  }
+  const firstbankId = await bankDAO.save(firstBank)
+
+  const secondBank = {
+    codigo: '554',
+    nome: 'teste name',
+    url: 'teste4.com.br',
+  }
+  const secondBankId = await bankDAO.save(secondBank)
+
+  const inputUpdate = {
+    id: firstbankId,
+    codigo: '555',
+    nome: 'teste name',
+    url: 'teste4.changed.com',
+  }
+
+  await expect(stu.execute(inputUpdate)).rejects.toThrow(
+    'nao e possivel alterar o banco para um Nome ja existente',
+  )
+  await bankDAO.remove(firstbankId)
+  await bankDAO.remove(secondBankId)
+})
