@@ -1,3 +1,11 @@
+## [0.5.0](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.4.0...v0.5.0) (2026-08-31)
+
+
+### Features
+
+* **banco:** garantido que nao possivel alterar um banco para um codigo ja existente ([e4d028c](https://github.com/Eduardu-sc/erp-refaturado/commit/e4d028c9f20ff28e00a32474b45f56ee1ac9b8aa))
+* **banco:** garantido que nao possivel alterar um banco para um nome ja existente ([da6ef17](https://github.com/Eduardu-sc/erp-refaturado/commit/da6ef17fe45f8ec240e677174d662ebb69f681e0))
+
 ## [0.4.0](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.3.1...v0.4.0) (2026-08-30)
 
 
@@ -23,6 +31,4 @@
 * **banco:** garantindo que banco nao passa ser atualizado com codigo invalido ([11a9716](https://github.com/Eduardu-sc/erp-refaturado/commit/11a97166f52a11c61630a378e59e3ecc26ac5cd2))
 * **banco:** garantindo que o banco nao seja alterado com nome invalido ([e509936](https://github.com/Eduardu-sc/erp-refaturado/commit/e5099360fe095651d80e57e1e7b1c6d5a366c706))
 * **banco:** garantindo que o banco nao seja criado com nome invalido ([5e26336](https://github.com/Eduardu-sc/erp-refaturado/commit/5e26336b1321ec02706d33c8154756fe13ded215))
-
-## [0.1.11](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.1.10...v0.1.11) (2026-08-27)
 
