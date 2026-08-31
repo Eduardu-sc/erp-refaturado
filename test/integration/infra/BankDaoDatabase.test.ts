@@ -136,6 +136,7 @@ test('deve buscar um banco por codigo', async () => {
 
   await bankDao.remove(bankId)
 })
+
 test('deve buscar um banco por nome', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
@@ -157,11 +158,13 @@ test('deve buscar um banco por nome', async () => {
 
   await bankDao.remove(bankId)
 })
+
 test('deve lançar um erro se Id nao for um numero ao remover', async () => {
   await expect(bankDao.remove('aaa' as any)).rejects.toThrow(
     'ID do banco e invalido',
   )
 })
+
 test('deve lançar um erro quando quando for Consultar por ID', async () => {
   await expect(bankDao.getById('aaa' as any)).rejects.toThrow(
     'ID do banco e invalido',

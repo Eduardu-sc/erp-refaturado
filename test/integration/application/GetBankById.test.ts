@@ -1,10 +1,12 @@
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
 
+import { BankDaoFake } from '../../moks/BankDaoFake.ts'
+
 let bancoDao: BankDAODataBase
 let stu: GetBankById
 beforeAll(() => {
-  bancoDao = new BankDAODataBase()
+  bancoDao = new BankDaoFake()
   stu = new GetBankById(bancoDao)
 })
 

@@ -1,11 +1,13 @@
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 import { RemoveBank } from '@infra/database/RemoveBank.ts'
 
+import { BankDaoFake } from '../../moks/BankDaoFake.ts'
+
 let bankDao: BankDAODataBase
 let stu: RemoveBank
 
 beforeAll(() => {
-  bankDao = new BankDAODataBase()
+  bankDao = new BankDaoFake()
   stu = new RemoveBank(bankDao)
 })
 

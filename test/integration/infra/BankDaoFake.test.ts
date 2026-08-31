@@ -5,7 +5,6 @@ let bankDao: BankDaoFake
 beforeEach(() => {
   bankDao = new BankDaoFake()
 })
-
 test('deve salvar um banco', async () => {
   const outPutBank = {
     codigo: '001',
@@ -25,7 +24,6 @@ test('deve salvar um banco', async () => {
 
   await bankDao.remove(bankId)
 })
-
 test('deve listar os bancos', async () => {
   const outPutBank = {
     codigo: '002',
@@ -47,7 +45,6 @@ test('deve listar os bancos', async () => {
 
   await bankDao.remove(bankId)
 })
-
 test('deve buscar um banco por id', async () => {
   const outPutBank = {
     codigo: '003',
@@ -67,7 +64,6 @@ test('deve buscar um banco por id', async () => {
 
   await bankDao.remove(bankId)
 })
-
 test('deve atualizar um banco', async () => {
   const outPutBank = {
     codigo: '004',

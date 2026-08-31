@@ -1,10 +1,20 @@
 import axios from 'axios'
+import mysqlConnection from 'mysql2/promise'
 axios.defaults.validateStatus = () => true
 const url = 'http://localhost:3001'
+
+const connection = mysqlConnection.createPool(String(process.env.DATABASE_URL))
+afterAll(() => {
+  connection.pool.end()
+})
 
 test('deve retornar a lista de bancos (GET /Banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
+  await connection.query(`delete from banco where codigo= ? or nome= ?`, [
+    fakeCode,
+    fakeName,
+  ])
   const bankCreate = {
     codigo: fakeCode,
     nome: fakeName,
@@ -32,6 +42,10 @@ test('deve retornar a lista de bancos (GET /Banco)', async () => {
 test('deve retornar um banco (GET /Banco/1)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
+  await connection.query(`delete from banco where codigo= ? or nome= ?`, [
+    fakeCode,
+    fakeName,
+  ])
   const bankCreate = {
     codigo: fakeCode,
     nome: fakeName,
@@ -85,6 +99,7 @@ test.each(['Test'])(
   'Não deve  criar um banco nome invalido %s (POST /banco)',
   async (rawName: any) => {
     const fakeCode = `${Math.random()}`.substring(2, 5)
+
     const inputCreate = {
       codigo: fakeCode,
       nome: rawName,
@@ -100,6 +115,10 @@ test.each(['Test'])(
 test('deve  alterar um banco (PUT /banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
+  await connection.query(`delete from banco where codigo= ? or nome= ?`, [
+    fakeCode,
+    fakeName,
+  ])
   const bankCreate = {
     codigo: fakeCode,
     nome: fakeName,
@@ -108,9 +127,16 @@ test('deve  alterar um banco (PUT /banco)', async () => {
   const responseCreate = await axios.post(`${url}/banco`, bankCreate)
   const outPutCreate = await responseCreate.data
   const bankId = await outPutCreate.id
+
+  const fakeCodeUpdate = `${Math.random()}`.substring(2, 5)
+  const fakeNameUpdate = `name ${Math.random()}`
+  await connection.query(`delete from banco where codigo= ? or nome= ?`, [
+    fakeCodeUpdate,
+    fakeNameUpdate,
+  ])
   const inputUpdate = {
-    codigo: '555',
-    nome: 'teste 3',
+    codigo: fakeCodeUpdate,
+    nome: fakeNameUpdate,
     url: 'teste3.com.br',
   }
   const responseUpdate = await axios.put(`${url}/banco/${bankId}`, inputUpdate)
@@ -139,6 +165,10 @@ test.each(['Test'])(
   async (rawName: any) => {
     const fakeCode = `${Math.random()}`.substring(2, 5)
     const fakeName = `name ${Math.random()}`
+    await connection.query(`delete from banco where codigo= ? or nome= ?`, [
+      fakeCode,
+      fakeName,
+    ])
     const bankCreate = {
       codigo: fakeCode,
       nome: fakeName,
@@ -186,6 +216,10 @@ test('nao deve  alterar um banco que nao existe (PUT /banco)', async () => {
 test('deve  deletar um banco (DELETE /banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
+  await connection.query(`delete from banco where codigo= ? or nome= ?`, [
+    fakeCode,
+    fakeName,
+  ])
   const inputCreate = {
     codigo: fakeCode,
     nome: fakeName,
