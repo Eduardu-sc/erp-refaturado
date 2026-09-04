@@ -1,3 +1,5 @@
+## [0.5.3](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.5.2...v0.5.3) (2026-09-04)
+
 ## [0.5.2](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.5.1...v0.5.2) (2026-09-01)
 
 ## [0.5.1](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.5.0...v0.5.1) (2026-08-31)
@@ -16,6 +18,4 @@
 ### Features
 
 * **banco:** adicionado validacao para nao criar um banco com mesmo nome ([f8f499c](https://github.com/Eduardu-sc/erp-refaturado/commit/f8f499c0bbc4567b18997711abcfb1de887ff3f6))
-
-## [0.3.1](https://github.com/Eduardu-sc/erp-refaturado/compare/v0.3.0...v0.3.1) (2026-08-29)
 
