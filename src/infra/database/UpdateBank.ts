@@ -1,11 +1,11 @@
-import { BankDAODataBase } from './bancoDao.ts'
+import { BankRepository } from './bankRepository.ts'
 import { UseCase } from './UserCase.ts'
 
 export class UpdateBank implements UseCase<
   UpdateBank.Input,
   UpdateBank.Output
 > {
-  constructor(private bankDao: BankDAODataBase) {}
+  constructor(private _bankRepository: BankRepository) {}
   async execute(input: UpdateBank.Input): Promise<UpdateBank.Output> {
     if (!input.nome || !input.nome.match(/^.+\s.+$/)) {
       throw new Error('Nome invalido')
@@ -17,13 +17,13 @@ export class UpdateBank implements UseCase<
     ) {
       throw new Error('Codigo invalido')
     }
-    const bank = await this.bankDao.getById(input.id)
+    const bank = await this._bankRepository.findById(input.id)
     if (!bank) {
       throw new Error('Banco nao localizado')
     }
 
-    if (bank.codigo !== input.codigo) {
-      const bankSecundario = await this.bankDao.getByCode(input.codigo)
+    if (bank.getCode() !== input.codigo) {
+      const bankSecundario = await this._bankRepository.findByCode(input.codigo)
 
       if (bankSecundario) {
         throw new Error(
@@ -31,8 +31,8 @@ export class UpdateBank implements UseCase<
         )
       }
     }
-    if (bank.nome !== input.nome) {
-      const bankSecundario = await this.bankDao.getByName(input.nome)
+    if (bank.getName() !== input.nome) {
+      const bankSecundario = await this._bankRepository.findByName(input.nome)
 
       if (bankSecundario) {
         throw new Error(
@@ -41,10 +41,18 @@ export class UpdateBank implements UseCase<
       }
     }
 
-    const bankUpdate = { ...bank, ...input }
-    await this.bankDao.update(bankUpdate)
+    bank.setCode(input.codigo)
+    bank.setName(input.nome)
+    bank.setUrl(input.url)
 
-    return bankUpdate
+    await this._bankRepository.update(bank)
+
+    return {
+      id: bank.getBankId(),
+      nome: bank.getName(),
+      codigo: bank.getCode(),
+      url: bank.getUrl(),
+    }
   }
 }
 export namespace UpdateBank {

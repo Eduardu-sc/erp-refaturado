@@ -1,23 +1,24 @@
-import { BankDAODataBase } from '@infra/database/bancoDao.ts'
+import { Bank } from '@infra/database/bank.ts'
+import { BankRepository } from '@infra/database/bankRepository.ts'
 import { RemoveBank } from '@infra/database/RemoveBank.ts'
 
-import { BankDaoFake } from '../../moks/BankDaoFake.ts'
+import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 
-let bankDao: BankDAODataBase
+let bankRepository: BankRepository
 let stu: RemoveBank
 
 beforeAll(() => {
-  bankDao = new BankDaoFake()
-  stu = new RemoveBank(bankDao)
+  bankRepository = new BankRepositoryFake()
+  stu = new RemoveBank(bankRepository)
 })
 
 test('deve  deletar um banco (DELETE /banco)', async () => {
-  const inputCreate = {
-    codigo: '555',
-    nome: 'teste',
+  const inputCreate = Bank.create({
+    code: '555',
+    name: 'teste',
     url: 'teste4.com.br',
-  }
-  const bankid = await bankDao.save(inputCreate)
+  })
+  const bankSaved = await bankRepository.save(inputCreate)
 
-  stu.execute({ id: bankid })
+  stu.execute({ id: bankSaved.getBankId() })
 })

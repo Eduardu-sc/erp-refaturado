@@ -1,37 +1,39 @@
-import { BancoDao } from '@infra/database/bancoDao.ts'
+import { Bank } from '@infra/database/bank.ts'
+import { BankRepository } from '@infra/database/bankRepository.ts'
 import { UpdateBank } from '@infra/database/UpdateBank.ts'
 
-import { BankDaoFake } from '../../moks/BankDaoFake.ts'
-let bankDAO: BancoDao
+import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
+
+let bankRepository: BankRepository
 let stu: UpdateBank
 beforeAll(() => {
-  bankDAO = new BankDaoFake()
+  bankRepository = new BankRepositoryFake()
 
-  stu = new UpdateBank(bankDAO)
+  stu = new UpdateBank(bankRepository)
 })
 test('deve  alterar um banco(use-case))', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
-  const bankCreate = {
-    codigo: fakeCode,
-    nome: fakeName,
+  const bankCreate = Bank.create({
+    code: fakeCode,
+    name: fakeName,
     url: 'teste4.com.br',
-  }
+  })
 
-  const bankId = await bankDAO.save(bankCreate)
+  const bankSaved = await bankRepository.save(bankCreate)
 
-  const bankData = await bankDAO.getById(bankId)
+  const bankData = await bankRepository.findById(bankSaved.getBankId())
 
   expect(bankData).toBeTruthy()
-  expect(bankData?.id).toBe(bankId)
-  expect(bankData?.codigo).toBe(bankCreate.codigo)
-  expect(bankData?.nome).toBe(bankCreate.nome)
-  expect(bankData?.url).toBe(bankCreate.url)
+  expect(bankData?.getBankId()).toBe(bankData?.getBankId())
+  expect(bankData?.getCode()).toBe(bankCreate.getCode())
+  expect(bankData?.getName()).toBe(bankCreate.getName())
+  expect(bankData?.getUrl()).toBe(bankCreate.getUrl())
 
   const fakeCodeUpdate = `${Math.random()}`.substring(2, 5)
   const fakeNameUpdate = `name ${Math.random()}`
   const inputUpdate = {
-    id: bankId,
+    id: bankSaved.getBankId(),
     codigo: fakeCodeUpdate,
     nome: fakeNameUpdate,
     url: 'update.com.br',
@@ -44,50 +46,50 @@ test('deve  alterar um banco(use-case))', async () => {
   expect(bankUpdate?.nome).toBe(inputUpdate.nome)
   expect(bankUpdate?.url).toBe(inputUpdate.url)
 
-  await bankDAO.remove(bankId)
+  await bankRepository.remove(bankSaved.getBankId())
 
-  const bankDelete = await bankDAO.getById(bankId)
+  const bankDelete = await bankRepository.findById(bankSaved.getBankId())
   expect(bankDelete).toBeFalsy()
 })
 test.each(['', undefined, null, 'Test'])(
   'nao deve  alterar um banco com Nome invalido (usecase)',
   async (rawName: any) => {
-    const bankCreate = {
-      codigo: '555',
-      nome: 'Teste teste',
+    const bankCreate = Bank.create({
+      code: '555',
+      name: 'Teste teste',
       url: 'teste4.com.br',
-    }
-    const bankId = await bankDAO.save(bankCreate)
+    })
+    const bankSaved = await bankRepository.save(bankCreate)
     const inputUpdate = {
-      id: bankId,
+      id: bankSaved.getBankId(),
       codigo: '555',
       nome: rawName,
       url: 'teste3.com.br',
     }
     await expect(stu.execute(inputUpdate)).rejects.toThrow('Nome invalido')
 
-    await bankDAO.remove(bankId)
+    await bankRepository.remove(bankSaved.getBankId())
   },
 )
 test.each(['', undefined, null, '1', '12', 'AAA'])(
   'nao deve  alterar um banco com Codigo invalido (usecase)',
   async (invalidCode: any) => {
-    const bankCreate = {
-      codigo: '555',
-      nome: 'Teste teste',
+    const bankCreate = Bank.create({
+      code: '555',
+      name: 'Teste teste',
       url: 'teste4.com.br',
-    }
-    const bankId = await bankDAO.save(bankCreate)
+    })
+    const bankSaved = await bankRepository.save(bankCreate)
 
     const inputUpdate = {
-      id: bankId,
+      id: bankSaved.getBankId(),
       codigo: invalidCode,
       nome: 'teste teste',
       url: 'teste3.com.br',
     }
     await expect(stu.execute(inputUpdate)).rejects.toThrow('Codigo invalido')
 
-    await bankDAO.remove(bankId)
+    await bankRepository.remove(bankSaved.getBankId())
   },
 )
 test('nao deve alterar um banco inexistente', async () => {
@@ -100,22 +102,22 @@ test('nao deve alterar um banco inexistente', async () => {
   await expect(stu.execute(inputUpdate)).rejects.toThrow('Banco nao localizado')
 })
 test('nao deve alterar um banco para um CODIGO existente (use-case))', async () => {
-  const firstBank = {
-    codigo: '553',
-    nome: 'teste',
+  const firstBank = Bank.create({
+    code: '553',
+    name: 'teste',
     url: 'teste4.com.br',
-  }
-  const firstbankId = await bankDAO.save(firstBank)
+  })
+  const firstbankSaved = await bankRepository.save(firstBank)
 
-  const secondBank = {
-    codigo: '554',
-    nome: 'teste name',
+  const secondBank = Bank.create({
+    code: '554',
+    name: 'teste name',
     url: 'teste4.com.br',
-  }
-  const secondBankId = await bankDAO.save(secondBank)
+  })
+  const secondBankSaved = await bankRepository.save(secondBank)
 
   const inputUpdate = {
-    id: firstbankId,
+    id: firstbankSaved.getBankId(),
     codigo: '554',
     nome: 'Test Name Changed',
     url: 'teste4.changed.com',
@@ -124,26 +126,26 @@ test('nao deve alterar um banco para um CODIGO existente (use-case))', async () 
   await expect(stu.execute(inputUpdate)).rejects.toThrow(
     'nao e possivel alterar o banco para um codigo ja existente',
   )
-  await bankDAO.remove(firstbankId)
-  await bankDAO.remove(secondBankId)
+  await bankRepository.remove(firstbankSaved.getBankId())
+  await bankRepository.remove(secondBankSaved.getBankId())
 })
 test('nao deve alterar um banco para um NOME existente (use-case))', async () => {
-  const firstBank = {
-    codigo: '553',
-    nome: 'teste',
+  const firstBank = Bank.create({
+    code: '553',
+    name: 'teste',
     url: 'teste4.com.br',
-  }
-  const firstbankId = await bankDAO.save(firstBank)
+  })
+  const firstbankSaved = await bankRepository.save(firstBank)
 
-  const secondBank = {
-    codigo: '554',
-    nome: 'teste name',
+  const secondBank = Bank.create({
+    code: '554',
+    name: 'teste name',
     url: 'teste4.com.br',
-  }
-  const secondBankId = await bankDAO.save(secondBank)
+  })
+  const secondBankSaved = await bankRepository.save(secondBank)
 
   const inputUpdate = {
-    id: firstbankId,
+    id: firstbankSaved.getBankId(),
     codigo: '555',
     nome: 'teste name',
     url: 'teste4.changed.com',
@@ -152,6 +154,6 @@ test('nao deve alterar um banco para um NOME existente (use-case))', async () =>
   await expect(stu.execute(inputUpdate)).rejects.toThrow(
     'nao e possivel alterar o banco para um Nome ja existente',
   )
-  await bankDAO.remove(firstbankId)
-  await bankDAO.remove(secondBankId)
+  await bankRepository.remove(firstbankSaved.getBankId())
+  await bankRepository.remove(secondBankSaved.getBankId())
 })

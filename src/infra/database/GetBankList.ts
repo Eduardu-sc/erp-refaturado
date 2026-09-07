@@ -1,14 +1,19 @@
-import { BancoDao } from './bancoDao.ts'
+import { BankRepository } from './bankRepository.ts'
 import { UseCase } from './UserCase.ts'
 
 export class GetBankList implements UseCase<
   GetBankList.Input,
   GetBankList.Output
 > {
-  constructor(private readonly bankDao: BancoDao) {}
+  constructor(private readonly _bankRepository: BankRepository) {}
   async execute(): Promise<GetBankList.Output> {
-    const rows = await this.bankDao.list()
-    return rows
+    const rows = await this._bankRepository.list()
+    return rows.map((bank) => ({
+      id: bank.getBankId(),
+      nome: bank.getName(),
+      codigo: bank.getCode(),
+      url: bank.getUrl(),
+    }))
   }
 }
 

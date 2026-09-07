@@ -1,31 +1,32 @@
-import { BankDAODataBase } from '@infra/database/bancoDao.ts'
+import { Bank } from '@infra/database/bank.ts'
+import { BankRepository } from '@infra/database/bankRepository.ts'
 import { GetBankList } from '@infra/database/GetBankList.ts'
 
-import { BankDaoFake } from '../../moks/BankDaoFake.ts'
+import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 
-let bankDao: BankDAODataBase
 let stu: GetBankList
+let bankRepository: BankRepository
 
 beforeAll(() => {
-  bankDao = new BankDaoFake()
-  stu = new GetBankList(bankDao)
+  bankRepository = new BankRepositoryFake()
+  stu = new GetBankList(bankRepository)
 })
 
 test('deve retornar a lista de bancos (UseCase)', async () => {
-  const bankCreate = {
-    codigo: '554',
-    nome: 'teste teste',
+  const bankCreate = Bank.create({
+    code: '554',
+    name: 'teste teste',
     url: 'teste5.com.br',
-  }
+  })
 
-  const bankId = await bankDao.save(bankCreate)
+  const bankSaved = await bankRepository.save(bankCreate)
   const outPut = await stu.execute()
   expect(outPut.length).toBeGreaterThanOrEqual(1)
-  const bancoData = outPut.find((item) => item.id === bankId)
+  const bancoData = outPut.find((item) => item.id === bankSaved.getBankId())
   expect(bancoData).toBeTruthy()
-  expect(bancoData?.id).toBe(bankId)
-  expect(bancoData?.codigo).toBe(bankCreate.codigo)
-  expect(bancoData?.nome).toBe(bankCreate.nome)
-  expect(bancoData?.url).toBe(bankCreate.url)
-  await bankDao.remove(bankId)
+  expect(bancoData?.id).toBe(bankSaved.getBankId())
+  expect(bancoData?.codigo).toBe(bankCreate.getCode())
+  expect(bancoData?.nome).toBe(bankCreate.getName())
+  expect(bancoData?.url).toBe(bankCreate.getUrl())
+  await bankRepository.remove(bankSaved.getBankId())
 })

@@ -29,6 +29,18 @@ export class Bank {
   getBankId() {
     return this.BankId
   }
+
+  setCode(code: string) {
+    this.code = code
+  }
+
+  setName(name: string) {
+    this.name = name
+  }
+
+  setUrl(url: string) {
+    this.url = url
+  }
 }
 export namespace Bank {
   export type CreateParams = {

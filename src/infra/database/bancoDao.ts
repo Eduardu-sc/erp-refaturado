@@ -1,24 +1,5 @@
 import mysqlConnection from 'mysql2/promise'
 
-export namespace BankDao {
-  export type SaveDto = {
-    codigo: string
-    nome: string
-    url: string
-  }
-  export type BankDto = {
-    id: number
-    codigo: string
-    nome: string
-    url: string
-  }
-  export type UpdateDto = {
-    id: number
-    codigo: string
-    nome: string
-    url: string
-  }
-}
 export interface BancoDao {
   save(dto: BankDao.SaveDto): Promise<number>
   list(): Promise<BankDao.BankDto[]>
@@ -126,5 +107,25 @@ export class BankDAODataBase implements BancoDao {
     )
     await connection.query<any[]>(`delete from banco where id= ?`, [id])
     connection.end()
+  }
+}
+
+export namespace BankDao {
+  export type SaveDto = {
+    codigo: string
+    nome: string
+    url: string
+  }
+  export type BankDto = {
+    id: number
+    codigo: string
+    nome: string
+    url: string
+  }
+  export type UpdateDto = {
+    id: number
+    codigo: string
+    nome: string
+    url: string
   }
 }

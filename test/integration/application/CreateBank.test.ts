@@ -1,12 +1,14 @@
-import { BankDAODataBase } from '@infra/database/bancoDao.ts'
+import { Bank } from '@infra/database/bank.ts'
+import { BankRepository } from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 
-import { BankDaoFake } from '../../moks/BankDaoFake.ts'
-let bancoDao: BankDAODataBase
+import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 let stu: CreateBank
+let bankRepository: BankRepository
+
 beforeAll(() => {
-  bancoDao = new BankDaoFake()
-  stu = new CreateBank(bancoDao)
+  bankRepository = new BankRepositoryFake()
+  stu = new CreateBank(bankRepository)
 })
 test('deve  criar um banco (usecase)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
@@ -23,7 +25,7 @@ test('deve  criar um banco (usecase)', async () => {
   expect(outPut?.nome).toBe(inputCreate.nome)
   expect(outPut?.url).toBe(inputCreate.url)
 
-  await bancoDao.remove(outPut.id)
+  await bankRepository.remove(outPut.id)
 })
 test.each(['', undefined, null, 'Test'])(
   'Não deve  criar um banco nome invalido %s (usecase)',
@@ -49,13 +51,14 @@ test.each(['', undefined, null, '1', '12', 'AAA'])(
 )
 test('nao deve  criar um banco com CODIGO existente (usecase)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
-  const inputCreate = {
-    codigo: fakeCode,
-    nome: 'teste test',
-    url: 'teste4.com.br',
-  }
 
-  const bankId = await bancoDao.save(inputCreate)
+  const inputCreate = Bank.create({
+    code: fakeCode,
+    name: 'teste test',
+    url: 'teste4.com.br',
+  })
+
+  const bankSaved = await bankRepository.save(inputCreate)
 
   const inputCreate2 = {
     codigo: fakeCode,
@@ -67,18 +70,18 @@ test('nao deve  criar um banco com CODIGO existente (usecase)', async () => {
     'Codigo Banco ja existe',
   )
 
-  await bancoDao.remove(bankId)
+  await bankRepository.remove(bankSaved.getBankId())
 })
 test('nao deve  criar um banco com NOME existente (usecase)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
-  const inputCreate = {
-    codigo: fakeCode,
-    nome: fakeName,
+  const inputCreate = Bank.create({
+    code: fakeCode,
+    name: fakeName,
     url: 'teste4.com.br',
-  }
+  })
 
-  const bankId = await bancoDao.save(inputCreate)
+  const bankSaved = await bankRepository.save(inputCreate)
   const fakeCode2 = `${Math.random()}`.substring(2, 5)
   const inputCreate2 = {
     codigo: fakeCode2,
@@ -90,5 +93,5 @@ test('nao deve  criar um banco com NOME existente (usecase)', async () => {
     'Nome Banco ja existe',
   )
 
-  await bancoDao.remove(bankId)
+  await bankRepository.remove(bankSaved.getBankId())
 })
