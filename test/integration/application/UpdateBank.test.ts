@@ -1,16 +1,19 @@
 import { Bank } from '@infra/database/bank.ts'
-import { BankRepository } from '@infra/database/bankRepository.ts'
+import {
+  BankRepository,
+  BankRepositoryDataBase,
+} from '@infra/database/bankRepository.ts'
 import { UpdateBank } from '@infra/database/UpdateBank.ts'
-
-import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 
 let bankRepository: BankRepository
 let stu: UpdateBank
+
 beforeAll(() => {
-  bankRepository = new BankRepositoryFake()
+  bankRepository = new BankRepositoryDataBase()
 
   stu = new UpdateBank(bankRepository)
 })
+
 test('deve  alterar um banco(use-case))', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
@@ -130,23 +133,25 @@ test('nao deve alterar um banco para um CODIGO existente (use-case))', async () 
   await bankRepository.remove(secondBankSaved.getBankId())
 })
 test('nao deve alterar um banco para um NOME existente (use-case))', async () => {
+  const fakeCodeFirst = `${Math.random()}`.substring(2, 5)
   const firstBank = Bank.create({
-    code: '553',
+    code: fakeCodeFirst,
     name: 'teste',
     url: 'teste4.com.br',
   })
   const firstbankSaved = await bankRepository.save(firstBank)
 
+  const fakeCodeSecond = `${Math.random()}`.substring(2, 5)
   const secondBank = Bank.create({
-    code: '554',
+    code: fakeCodeSecond,
     name: 'teste name',
     url: 'teste4.com.br',
   })
   const secondBankSaved = await bankRepository.save(secondBank)
-
+  const fakeCodeUpdate = `${Math.random()}`.substring(2, 5)
   const inputUpdate = {
     id: firstbankSaved.getBankId(),
-    codigo: '555',
+    codigo: fakeCodeUpdate,
     nome: 'teste name',
     url: 'teste4.changed.com',
   }

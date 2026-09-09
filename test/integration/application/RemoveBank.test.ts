@@ -1,14 +1,15 @@
 import { Bank } from '@infra/database/bank.ts'
-import { BankRepository } from '@infra/database/bankRepository.ts'
+import {
+  BankRepository,
+  BankRepositoryDataBase,
+} from '@infra/database/bankRepository.ts'
 import { RemoveBank } from '@infra/database/RemoveBank.ts'
-
-import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 
 let bankRepository: BankRepository
 let stu: RemoveBank
 
 beforeAll(() => {
-  bankRepository = new BankRepositoryFake()
+  bankRepository = new BankRepositoryDataBase()
   stu = new RemoveBank(bankRepository)
 })
 
