@@ -1,13 +1,16 @@
 import { Bank } from '@infra/database/bank.ts'
-import { BankRepository } from '@infra/database/bankRepository.ts'
+import {
+  BankRepository,
+  BankRepositoryDataBase,
+} from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 
-import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
+// import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 let stu: CreateBank
 let bankRepository: BankRepository
 
 beforeAll(() => {
-  bankRepository = new BankRepositoryFake()
+  bankRepository = new BankRepositoryDataBase()
   stu = new CreateBank(bankRepository)
 })
 test('deve  criar um banco (usecase)', async () => {

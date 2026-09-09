@@ -1,3 +1,4 @@
+import { BankRepositoryDataBase } from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
 import { GetBankList } from '@infra/database/GetBankList.ts'
@@ -6,13 +7,11 @@ import { UpdateBank } from '@infra/database/UpdateBank.ts'
 import cors from 'cors'
 import express, { Request, Response } from 'express'
 
-import { BankRepositoryFake } from '../test/moks/BankRepositoryFake.ts'
-
 const app = express()
 app.use(express.json())
 app.use(cors())
 
-const bankRepository = new BankRepositoryFake()
+const bankRepository = new BankRepositoryDataBase()
 app.get('/banco', async (request: Request, response: Response) => {
   const usecase = new GetBankList(bankRepository)
   const rows = await usecase.execute()
