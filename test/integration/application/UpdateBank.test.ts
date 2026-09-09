@@ -7,13 +7,11 @@ import { UpdateBank } from '@infra/database/UpdateBank.ts'
 
 let bankRepository: BankRepository
 let stu: UpdateBank
-
 beforeAll(() => {
   bankRepository = new BankRepositoryDataBase()
 
   stu = new UpdateBank(bankRepository)
 })
-
 test('deve  alterar um banco(use-case))', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
@@ -133,25 +131,23 @@ test('nao deve alterar um banco para um CODIGO existente (use-case))', async () 
   await bankRepository.remove(secondBankSaved.getBankId())
 })
 test('nao deve alterar um banco para um NOME existente (use-case))', async () => {
-  const fakeCodeFirst = `${Math.random()}`.substring(2, 5)
   const firstBank = Bank.create({
-    code: fakeCodeFirst,
+    code: '553',
     name: 'teste',
     url: 'teste4.com.br',
   })
   const firstbankSaved = await bankRepository.save(firstBank)
 
-  const fakeCodeSecond = `${Math.random()}`.substring(2, 5)
   const secondBank = Bank.create({
-    code: fakeCodeSecond,
+    code: '554',
     name: 'teste name',
     url: 'teste4.com.br',
   })
   const secondBankSaved = await bankRepository.save(secondBank)
-  const fakeCodeUpdate = `${Math.random()}`.substring(2, 5)
+
   const inputUpdate = {
     id: firstbankSaved.getBankId(),
-    codigo: fakeCodeUpdate,
+    codigo: '555',
     nome: 'teste name',
     url: 'teste4.changed.com',
   }
