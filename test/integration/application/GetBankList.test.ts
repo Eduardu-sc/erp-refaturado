@@ -21,13 +21,16 @@ test('deve retornar a lista de bancos (UseCase)', async () => {
   })
 
   const bankSaved = await bankRepository.save(bankCreate)
-  const outPut = await stu.execute()
-  expect(outPut.length).toBeGreaterThanOrEqual(1)
-  const bancoData = outPut.find((item) => item.id === bankSaved.getBankId())
-  expect(bancoData).toBeTruthy()
-  expect(bancoData?.id).toBe(bankSaved.getBankId())
-  expect(bancoData?.codigo).toBe(bankCreate.getCode())
-  expect(bancoData?.nome).toBe(bankCreate.getName())
-  expect(bancoData?.url).toBe(bankCreate.getUrl())
-  await bankRepository.remove(bankSaved.getBankId())
+  try {
+    const outPut = await stu.execute()
+    expect(outPut.length).toBeGreaterThanOrEqual(1)
+    const bancoData = outPut.find((item) => item.id === bankSaved.getBankId())
+    expect(bancoData).toBeTruthy()
+    expect(bancoData?.id).toBe(bankSaved.getBankId())
+    expect(bancoData?.codigo).toBe(bankCreate.getCode())
+    expect(bancoData?.nome).toBe(bankCreate.getName())
+    expect(bancoData?.url).toBe(bankCreate.getUrl())
+  } finally {
+    await bankRepository.remove(bankSaved.getBankId())
+  }
 })

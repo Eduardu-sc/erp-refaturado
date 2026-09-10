@@ -23,14 +23,16 @@ test('deve retornar um banco (usecase)', async () => {
   const inputId = {
     id: bankSaved.getBankId(),
   }
-  const outPut = await stu.execute(inputId)
+  try {
+    const outPut = await stu.execute(inputId)
 
-  expect(outPut).toBeInstanceOf(Object)
+    expect(outPut).toBeInstanceOf(Object)
 
-  expect(outPut?.id).toBe(bankSaved.getBankId())
-  expect(outPut?.codigo).toBe(bankCreate.getCode())
-  expect(outPut?.nome).toBe(bankCreate.getName())
-  expect(outPut?.url).toBe(bankCreate.getUrl())
-
-  await bankRepository.remove(bankSaved.getBankId())
+    expect(outPut?.id).toBe(bankSaved.getBankId())
+    expect(outPut?.codigo).toBe(bankCreate.getCode())
+    expect(outPut?.nome).toBe(bankCreate.getName())
+    expect(outPut?.url).toBe(bankCreate.getUrl())
+  } finally {
+    await bankRepository.remove(bankSaved.getBankId())
+  }
 })

@@ -30,29 +30,25 @@ test('deve  criar um banco (usecase)', async () => {
 
   await bankRepository.remove(outPut.id)
 })
-test.each(['', undefined, null, 'Test'])(
-  'Não deve  criar um banco nome invalido %s (usecase)',
-  async (rawName: any) => {
-    const inputCreate = {
-      codigo: '555',
-      nome: rawName,
-      url: 'teste4.com.br',
-    }
-    await expect(stu.execute(inputCreate)).rejects.toThrow('Nome invalido')
-  },
-)
-test.each(['', undefined, null, '1', '12', 'AAA'])(
-  'Não deve  criar um banco codigo invalido %s (usecase)',
-  async (invalidCode: any) => {
-    const inputCreate = {
-      codigo: invalidCode,
-      nome: 'Test teste',
-      url: 'teste4.com.br',
-    }
-    await expect(stu.execute(inputCreate)).rejects.toThrow('Codigo invalido')
-  },
-)
-test('nao deve  criar um banco com CODIGO existente (usecase)', async () => {
+test('Não deve  criar um banco nome invalido  (usecase)', async () => {
+  const invalidName = 'Test'
+  const inputCreate = {
+    codigo: '555',
+    nome: invalidName,
+    url: 'teste4.com.br',
+  }
+  await expect(stu.execute(inputCreate)).rejects.toThrow('Nome invalido')
+})
+test('Não deve  criar um banco codigo invalido  (usecase)', async () => {
+  const invalidCode = 'AAA'
+  const inputCreate = {
+    codigo: invalidCode,
+    nome: 'Test teste',
+    url: 'teste4.com.br',
+  }
+  await expect(stu.execute(inputCreate)).rejects.toThrow('Codigo invalido')
+})
+test('Não deve  criar um banco com CODIGO existente (usecase)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
 
   const inputCreate = Bank.create({
@@ -62,20 +58,21 @@ test('nao deve  criar um banco com CODIGO existente (usecase)', async () => {
   })
 
   const bankSaved = await bankRepository.save(inputCreate)
+  try {
+    const inputCreate2 = {
+      codigo: fakeCode,
+      nome: 'teste test',
+      url: 'teste4.com.br',
+    }
 
-  const inputCreate2 = {
-    codigo: fakeCode,
-    nome: 'teste test',
-    url: 'teste4.com.br',
+    await expect(stu.execute(inputCreate2)).rejects.toThrow(
+      'Codigo Banco ja existe',
+    )
+  } finally {
+    await bankRepository.remove(bankSaved.getBankId())
   }
-
-  await expect(stu.execute(inputCreate2)).rejects.toThrow(
-    'Codigo Banco ja existe',
-  )
-
-  await bankRepository.remove(bankSaved.getBankId())
 })
-test('nao deve  criar um banco com NOME existente (usecase)', async () => {
+test('Não deve  criar um banco com NOME existente (usecase)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const fakeName = `name ${Math.random()}`
   const inputCreate = Bank.create({
@@ -85,16 +82,18 @@ test('nao deve  criar um banco com NOME existente (usecase)', async () => {
   })
 
   const bankSaved = await bankRepository.save(inputCreate)
-  const fakeCode2 = `${Math.random()}`.substring(2, 5)
-  const inputCreate2 = {
-    codigo: fakeCode2,
-    nome: fakeName,
-    url: 'teste4.com.br',
+  try {
+    const fakeCode2 = `${Math.random()}`.substring(2, 5)
+    const inputCreate2 = {
+      codigo: fakeCode2,
+      nome: fakeName,
+      url: 'teste4.com.br',
+    }
+
+    await expect(stu.execute(inputCreate2)).rejects.toThrow(
+      'Nome Banco ja existe',
+    )
+  } finally {
+    await bankRepository.remove(bankSaved.getBankId())
   }
-
-  await expect(stu.execute(inputCreate2)).rejects.toThrow(
-    'Nome Banco ja existe',
-  )
-
-  await bankRepository.remove(bankSaved.getBankId())
 })

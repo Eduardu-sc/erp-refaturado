@@ -21,5 +21,5 @@ test('deve  deletar um banco (DELETE /banco)', async () => {
   })
   const bankSaved = await bankRepository.save(inputCreate)
 
-  stu.execute({ id: bankSaved.getBankId() })
+  await stu.execute({ id: bankSaved.getBankId() })
 })
