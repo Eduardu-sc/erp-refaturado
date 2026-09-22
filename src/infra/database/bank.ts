@@ -40,11 +40,15 @@ export class Bank {
     return this.BankId
   }
 
-  setCode(code: string) {
+  changeCode(code: string) {
+    if (!validateBankCode(code)) throw new Error('Codigo invalido')
     this.code = code
   }
 
-  setName(name: string) {
+  changeName(name: string) {
+    if (!validateBankName(name)) {
+      throw new Error('Nome invalido')
+    }
     this.name = name
   }
 

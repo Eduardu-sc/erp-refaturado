@@ -77,8 +77,8 @@ test('deve atualizar um banco', async () => {
 
   const bankSaved = await bankRepository.save(outPutBank)
 
-  bankSaved.setCode('700')
-  bankSaved.setName('novo teste')
+  bankSaved.changeCode('700')
+  bankSaved.changeName('novo teste')
   bankSaved.setUrl('testenove.com.br')
 
   await bankRepository.update(bankSaved)

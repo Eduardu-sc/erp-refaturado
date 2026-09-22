@@ -11,6 +11,11 @@ export class CreateBank implements UseCase<
     const bancoExistePorCode = await this._bankRepository.findByCode(
       input.codigo,
     )
+    const bank = Bank.create({
+      code: input.codigo,
+      name: input.nome,
+      url: input.url,
+    })
     if (bancoExistePorCode) {
       throw new Error('Codigo Banco ja existe')
     }
@@ -19,11 +24,6 @@ export class CreateBank implements UseCase<
     if (bancoExisteName) {
       throw new Error('Nome Banco ja existe')
     }
-    const bank = Bank.create({
-      code: input.codigo,
-      name: input.nome,
-      url: input.url,
-    })
 
     const bankSaved = await this._bankRepository.save(bank)
     return {
