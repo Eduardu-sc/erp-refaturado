@@ -107,7 +107,7 @@ test('nao deve alterar um banco inexistente', async () => {
 test('nao deve alterar um banco para um CODIGO existente (use-case))', async () => {
   const firstBank = Bank.create({
     code: '553',
-    name: 'teste',
+    name: 'teste teste',
     url: 'teste4.com.br',
   })
   const firstbankSaved = await bankRepository.save(firstBank)
@@ -137,7 +137,7 @@ test('nao deve alterar um banco para um CODIGO existente (use-case))', async () 
 test('nao deve alterar um banco para um NOME existente (use-case))', async () => {
   const firstBank = Bank.create({
     code: '553',
-    name: 'teste',
+    name: 'Teste teste',
     url: 'teste4.com.br',
   })
   const firstbankSaved = await bankRepository.save(firstBank)

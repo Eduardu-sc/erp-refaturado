@@ -107,8 +107,9 @@ test('deve remover um banco', async () => {
   expect(bankDelete).toBeFalsy()
 })
 test('deve buscar um banco por codigo', async () => {
+  const fakeCode = `${Math.random()}`.substring(2, 5)
   const input = Bank.create({
-    code: crypto.randomUUID(),
+    code: fakeCode,
     name: 'banco buscar id',
     url: 'buscar.com.br',
   })

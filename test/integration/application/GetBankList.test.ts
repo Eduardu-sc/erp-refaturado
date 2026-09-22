@@ -21,6 +21,7 @@ test('deve retornar a lista de bancos (UseCase)', async () => {
   })
 
   const bankSaved = await bankRepository.save(bankCreate)
+
   try {
     const outPut = await stu.execute()
     expect(outPut.length).toBeGreaterThanOrEqual(1)
