@@ -1,16 +1,14 @@
+import { ApplicationError } from '@infra/database/ApplicationError.ts'
 import { Bank } from '@infra/database/bank.ts'
-import {
-  BankRepository,
-  BankRepositoryDataBase,
-} from '@infra/database/bankRepository.ts'
+import { BankRepository } from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 
-// import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
+import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 let stu: CreateBank
 let bankRepository: BankRepository
 
 beforeAll(() => {
-  bankRepository = new BankRepositoryDataBase()
+  bankRepository = new BankRepositoryFake()
   stu = new CreateBank(bankRepository)
 })
 test('deve  criar um banco (usecase)', async () => {
@@ -66,7 +64,7 @@ test('Não deve  criar um banco com CODIGO existente (usecase)', async () => {
     }
 
     await expect(stu.execute(inputCreate2)).rejects.toThrow(
-      'Codigo Banco ja existe',
+      new ApplicationError('Codigo Banco ja existe'),
     )
   } finally {
     await bankRepository.remove(bankSaved.getBankId())
@@ -91,7 +89,7 @@ test('Não deve  criar um banco com NOME existente (usecase)', async () => {
     }
 
     await expect(stu.execute(inputCreate2)).rejects.toThrow(
-      'Nome Banco ja existe',
+      new ApplicationError('Nome Banco ja existe'),
     )
   } finally {
     await bankRepository.remove(bankSaved.getBankId())

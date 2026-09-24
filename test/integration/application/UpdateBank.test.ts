@@ -1,3 +1,4 @@
+import { ApplicationError } from '@infra/database/ApplicationError.ts'
 import { Bank } from '@infra/database/bank.ts'
 import {
   BankRepository,
@@ -127,7 +128,9 @@ test('nao deve alterar um banco para um CODIGO existente (use-case))', async () 
   }
   try {
     await expect(stu.execute(inputUpdate)).rejects.toThrow(
-      'nao e possivel alterar o banco para um codigo ja existente',
+      new ApplicationError(
+        'nao e possivel alterar o banco para um codigo ja existente',
+      ),
     )
   } finally {
     await bankRepository.remove(firstbankSaved.getBankId())
@@ -157,7 +160,9 @@ test('nao deve alterar um banco para um NOME existente (use-case))', async () =>
   }
   try {
     await expect(stu.execute(inputUpdate)).rejects.toThrow(
-      'nao e possivel alterar o banco para um Nome ja existente',
+      new ApplicationError(
+        'nao e possivel alterar o banco para um Nome ja existente',
+      ),
     )
   } finally {
     await bankRepository.remove(firstbankSaved.getBankId())

@@ -1,4 +1,6 @@
+import { ApplicationError } from './ApplicationError.ts'
 import { BankRepository } from './bankRepository.ts'
+import { NotFoundError } from './NotFoundError.ts'
 import { UseCase } from './UserCase.ts'
 
 export class UpdateBank implements UseCase<
@@ -9,14 +11,14 @@ export class UpdateBank implements UseCase<
   async execute(input: UpdateBank.Input): Promise<UpdateBank.Output> {
     const bank = await this._bankRepository.findById(input.id)
     if (!bank) {
-      throw new Error('Banco nao localizado')
+      throw new NotFoundError('Banco nao localizado')
     }
 
     if (bank.getCode() !== input.codigo) {
       const bankSecundario = await this._bankRepository.findByCode(input.codigo)
       bank.changeCode(input.codigo)
       if (bankSecundario) {
-        throw new Error(
+        throw new ApplicationError(
           'nao e possivel alterar o banco para um codigo ja existente',
         )
       }
@@ -25,7 +27,7 @@ export class UpdateBank implements UseCase<
       const bankSecundario = await this._bankRepository.findByName(input.nome)
       bank.changeName(input.nome)
       if (bankSecundario) {
-        throw new Error(
+        throw new ApplicationError(
           'nao e possivel alterar o banco para um Nome ja existente',
         )
       }

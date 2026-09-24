@@ -4,6 +4,7 @@ import {
   BankRepositoryDataBase,
 } from '@infra/database/bankRepository.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
+import { NotFoundError } from '@infra/database/NotFoundError.ts'
 
 let stu: GetBankById
 let bankRepository: BankRepository
@@ -13,7 +14,7 @@ beforeAll(() => {
   stu = new GetBankById(bankRepository)
 })
 
-test('deve retornar um banco (usecase)', async () => {
+test('deve retornar um banco por id (usecase)', async () => {
   const bankCreate = Bank.create({
     code: '554',
     name: 'teste teste',
@@ -35,4 +36,13 @@ test('deve retornar um banco (usecase)', async () => {
   } finally {
     await bankRepository.remove(bankSaved.getBankId())
   }
+})
+test('deve retornar um erro quando nao for encontrado (usecase)', async () => {
+  const inputId = {
+    id: 1_001_2,
+  }
+
+  await expect(stu.execute(inputId)).rejects.toThrow(
+    new NotFoundError('Banco nao localizado'),
+  )
 })

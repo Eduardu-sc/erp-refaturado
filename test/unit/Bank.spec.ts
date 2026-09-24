@@ -1,4 +1,5 @@
 import { Bank } from '@infra/database/bank.ts'
+import { DomainError } from '@infra/database/DomainError.ts'
 
 test('Deve criar um banco', async () => {
   const input = { name: 'Any Nome', code: '123', url: 'url' }
@@ -38,7 +39,7 @@ test('Não deve criar um banco com nome inválido', () => {
       code: '123',
       url: 'url',
     }),
-  ).toThrow('Nome invalido')
+  ).toThrow(new DomainError('Nome invalido'))
 })
 test('Não deve criar um banco com código inválido', () => {
   const invalidCode = 'abc'
@@ -48,7 +49,7 @@ test('Não deve criar um banco com código inválido', () => {
       code: invalidCode,
       url: 'url',
     }),
-  ).toThrow('Codigo invalido')
+  ).toThrow(new DomainError('Codigo invalido'))
 })
 test('Não deve mudar o nome se ele for inválido', () => {
   const instancia = Bank.create({
@@ -57,7 +58,9 @@ test('Não deve mudar o nome se ele for inválido', () => {
     url: 'url',
   })
   const invalidName = 'abc'
-  expect(() => instancia.changeName(invalidName)).toThrow('Nome invalido')
+  expect(() => instancia.changeName(invalidName)).toThrow(
+    new DomainError('Nome invalido'),
+  )
 })
 test('Não deve mudar o código se ele for inválido', () => {
   const instancia = Bank.create({
@@ -66,5 +69,7 @@ test('Não deve mudar o código se ele for inválido', () => {
     url: 'url',
   })
   const invalidCode = 'abc'
-  expect(() => instancia.changeCode(invalidCode)).toThrow('Codigo invalido')
+  expect(() => instancia.changeCode(invalidCode)).toThrow(
+    new DomainError('Codigo invalido'),
+  )
 })

@@ -109,6 +109,7 @@ test.each(['Test'])(
     expect(responseCreate.status).toBe(422)
     const outPutCreate = await responseCreate.data
 
+    expect(outPutCreate.code).toBe('DOMAIN_ERROR')
     expect(outPutCreate.message).toBe('Nome invalido')
   },
 )
@@ -191,8 +192,9 @@ test.each(['Test'])(
     )
 
     expect(responseUpdate.status).toBe(422)
+    console.log()
     const outPutUpdate = responseUpdate.data
-
+    expect(outPutUpdate.code).toBe('DOMAIN_ERROR')
     expect(outPutUpdate.message).toBe('Nome invalido')
 
     const responseDelete = await axios.delete(`${url}/banco/${bankId}`)
@@ -211,6 +213,8 @@ test('nao deve  alterar um banco que nao existe (PUT /banco)', async () => {
 
   expect(responseUpdate.status).toBe(404)
   const outPutUpdate = responseUpdate.data
+
+  expect(outPutUpdate.code).toBe('NOT_FOUND_ERROR')
   expect(outPutUpdate.message).toBe('Banco nao localizado')
 })
 test('deve  deletar um banco (DELETE /banco)', async () => {
@@ -235,4 +239,10 @@ test('deve  deletar um banco (DELETE /banco)', async () => {
   const resposeGet = await axios.get(`${url}/banco/${bankId}`)
   expect(resposeGet.status).toBe(404)
 })
-// convertional commits https://www.conventionalcommits.org/en/v1.0.0/
+test('deve retornar 404 banco (GET /Banco/:id)', async () => {
+  const response = await axios.get(`${url}/banco/${9_999_0}`)
+  const outPut = await response.data
+
+  expect(response.status).toBe(404)
+  expect(outPut.code).toBe('NOT_FOUND_ERROR')
+})

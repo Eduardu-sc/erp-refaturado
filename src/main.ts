@@ -1,7 +1,9 @@
 import { BankRepositoryDataBase } from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
+import { DomainError } from '@infra/database/DomainError.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
 import { GetBankList } from '@infra/database/GetBankList.ts'
+import { NotFoundError } from '@infra/database/NotFoundError.ts'
 import { RemoveBank } from '@infra/database/RemoveBank.ts'
 import { UpdateBank } from '@infra/database/UpdateBank.ts'
 import cors from 'cors'
@@ -20,14 +22,17 @@ app.get('/banco', async (request: Request, response: Response) => {
 app.get('/banco/:id', async (request: Request, response: Response) => {
   const bankId = Number(request.params.id)
   const usecase = new GetBankById(bankRepository)
-  const rows = await usecase.execute({ id: bankId })
-
-  if (!rows) {
-    return response.status(404).json({
-      message: 'Banco não encontrado',
-    })
+  try {
+    const rows = await usecase.execute({ id: bankId })
+    response.status(200).json(rows)
+  } catch (error: any) {
+    if (error instanceof NotFoundError)
+      return response.status(404).json({
+        message: error.message,
+        code: error.code,
+      })
+    return response.status(500).json({ message: 'Internal server Error' })
   }
-  response.status(200).json(rows)
 })
 app.post('/banco', async (request: Request, response: Response) => {
   const { codigo, nome, url } = request.body
@@ -38,7 +43,12 @@ app.post('/banco', async (request: Request, response: Response) => {
 
     return response.status(201).json(outPut)
   } catch (error: any) {
-    return response.status(422).json({ message: error?.message })
+    if (error instanceof DomainError) {
+      return response
+        .status(422)
+        .json({ message: error.message, code: error.code })
+    }
+    return response.status(500).json({ message: 'Internal server Error' })
   }
 })
 app.put('/banco/:id', async (request: Request, response: Response) => {
@@ -55,11 +65,17 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
       ...bankUpdate,
     })
   } catch (error: any) {
-    if (error?.message === 'Banco nao localizado') {
-      return response.status(404).json({ message: error?.message })
+    if (error instanceof NotFoundError) {
+      return response
+        .status(404)
+        .json({ message: error.message, code: error.code })
     }
-
-    return response.status(422).json({ message: error?.message })
+    if (error instanceof DomainError) {
+      return response
+        .status(422)
+        .json({ message: error.message, code: error.code })
+    }
+    return response.status(500).json({ message: 'Internal server Error' })
   }
 })
 app.delete('/banco/:id', async (request: Request, response: Response) => {

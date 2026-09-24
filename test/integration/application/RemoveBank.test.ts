@@ -19,6 +19,7 @@ test('deve  deletar um banco (DELETE /banco)', async () => {
     name: 'teste teste',
     url: 'teste4.com.br',
   })
+
   const bankSaved = await bankRepository.save(inputCreate)
 
   await stu.execute({ id: bankSaved.getBankId() })
