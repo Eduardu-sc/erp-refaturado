@@ -1,3 +1,4 @@
+import { ApplicationError } from '@infra/database/ApplicationError.ts'
 import { BankDAODataBase } from '@infra/database/bancoDao.ts'
 
 let bankDao: BankDAODataBase
@@ -161,7 +162,7 @@ test('deve buscar um banco por nome', async () => {
 
 test('deve lançar um erro se Id nao for um numero ao remover', async () => {
   await expect(bankDao.remove('aaa' as any)).rejects.toThrow(
-    'ID do banco e invalido',
+    new ApplicationError('ID do banco e invalido'),
   )
 })
 

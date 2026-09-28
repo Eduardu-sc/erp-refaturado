@@ -1,5 +1,7 @@
 import mysqlConnection from 'mysql2/promise'
 
+import { ApplicationError } from './ApplicationError.ts'
+
 export interface BancoDao {
   save(dto: BankDao.SaveDto): Promise<number>
   list(): Promise<BankDao.BankDto[]>
@@ -68,7 +70,7 @@ export class BankDAODataBase implements BancoDao {
 
   async getById(id: number): Promise<BankDao.BankDto | undefined> {
     if (isNaN(id)) {
-      throw new Error('ID do banco e invalido')
+      throw new ApplicationError('ID do banco e invalido')
     }
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
@@ -99,9 +101,8 @@ export class BankDAODataBase implements BancoDao {
   }
 
   async remove(id: number): Promise<void> {
-    if (isNaN(id)) {
-      throw new Error('ID do banco e invalido')
-    }
+    if (isNaN(id)) throw new ApplicationError('ID do banco e invalido')
+
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )

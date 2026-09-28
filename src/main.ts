@@ -1,3 +1,4 @@
+import { ApplicationError } from '@infra/database/ApplicationError.ts'
 import { BankRepositoryDataBase } from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
 import { DomainError } from '@infra/database/DomainError.ts'
@@ -81,10 +82,20 @@ app.put('/banco/:id', async (request: Request, response: Response) => {
 app.delete('/banco/:id', async (request: Request, response: Response) => {
   const bankId = Number(request.params.id)
   const usecase = new RemoveBank(bankRepository)
-
-  await usecase.execute({ id: bankId })
-
-  response.status(200).json()
+  const input = {
+    id: bankId,
+  }
+  try {
+    await usecase.execute(input)
+    response.status(200).json()
+  } catch (error) {
+    if (error instanceof ApplicationError) {
+      return response
+        .status(422)
+        .json({ message: error.message, code: error.code })
+    }
+    return response.status(500).json({ message: 'Internal server Error' })
+  }
 })
 app.listen('3001', () => {
   console.log('http://localhost:3001')

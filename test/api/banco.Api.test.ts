@@ -10,6 +10,7 @@ afterAll(() => {
 
 test('deve retornar a lista de bancos (GET /Banco)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
+
   const fakeName = `name ${Math.random()}`
   await connection.query(`delete from banco where codigo= ? or nome= ?`, [
     fakeCode,
@@ -245,4 +246,10 @@ test('deve retornar 404 banco (GET /Banco/:id)', async () => {
 
   expect(response.status).toBe(404)
   expect(outPut.code).toBe('NOT_FOUND_ERROR')
+})
+test('Nao deve  deletar um banco id invalido (DELETE /banco)', async () => {
+  const responseDelete = await axios.delete(`${url}/banco/abc`)
+
+  expect(responseDelete.status).toBe(422)
+  expect(responseDelete.data.message).toBe('ID do banco e invalido')
 })
