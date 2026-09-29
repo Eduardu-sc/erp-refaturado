@@ -63,15 +63,16 @@ export class BankRepositoryDataBase implements BankRepository {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
-    const [result] = await connection.execute<any>(
-      'INSERT INTO banco (codigo, nome,url) VALUES (?, ?, ?)',
+    const [rows] = await connection.query<any>(
+      'INSERT INTO banco (codigo, nome,url) VALUES (?, ?, ?) RETURNING *',
       [bank.getCode(), bank.getName(), bank.getUrl()],
     )
 
     connection.end()
+    const [row] = rows
 
     const bankSaved = Bank.restore({
-      bankId: result.insertId,
+      bankId: row.id,
       code: bank.getCode(),
       name: bank.getName(),
       url: bank.getUrl(),

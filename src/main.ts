@@ -17,8 +17,13 @@ app.use(cors())
 const bankRepository = new BankRepositoryDataBase()
 app.get('/banco', async (request: Request, response: Response) => {
   const usecase = new GetBankList(bankRepository)
-  const rows = await usecase.execute()
-  response.status(200).json(rows)
+  try {
+    const rows = await usecase.execute()
+
+    response.status(200).json(rows)
+  } catch {
+    return response.status(500).json({ message: 'Internal server Error' })
+  }
 })
 app.get('/banco/:id', async (request: Request, response: Response) => {
   const bankId = Number(request.params.id)

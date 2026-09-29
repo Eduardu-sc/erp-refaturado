@@ -49,13 +49,15 @@ export class BankDAODataBase implements BancoDao {
     const connection = mysqlConnection.createPool(
       String(process.env.DATABASE_URL),
     )
-    const [result] = await connection.execute<any>(
-      'INSERT INTO banco (codigo, nome,url) VALUES (?, ?, ?)',
+    const [result] = await connection.query<any>(
+      'INSERT INTO banco (codigo, nome,url) VALUES (?, ?, ?)  RETURNING *',
       [dto.codigo, dto.nome, dto.url],
     )
     connection.end()
 
-    return result.insertId
+    const [row] = result
+
+    return row.id
   }
 
   async list(): Promise<BankDao.BankDto[]> {
