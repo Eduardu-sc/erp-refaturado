@@ -1,16 +1,19 @@
+import { AdapterMysql } from '@infra/database/AdapterMysql.ts'
 import { Bank } from '@infra/database/bank.ts'
 import {
   BankRepository,
   BankRepositoryDataBase,
 } from '@infra/database/bankRepository.ts'
+import { DatabaseConnection } from '@infra/database/DataBaseConnetion.ts'
 import { GetBankById } from '@infra/database/GetBankById.ts'
 import { NotFoundError } from '@infra/database/NotFoundError.ts'
 
 let stu: GetBankById
 let bankRepository: BankRepository
+let dataBaseConnection: DatabaseConnection
 beforeAll(() => {
-  bankRepository = new BankRepositoryDataBase()
-
+  dataBaseConnection = new AdapterMysql(process.env.DATABASE_URL)
+  bankRepository = new BankRepositoryDataBase(dataBaseConnection)
   stu = new GetBankById(bankRepository)
 })
 

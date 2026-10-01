@@ -1,17 +1,23 @@
+import { AdapterMysql } from '@infra/database/AdapterMysql.ts'
 import { ApplicationError } from '@infra/database/ApplicationError.ts'
 import { Bank } from '@infra/database/bank.ts'
-import { BankRepository } from '@infra/database/bankRepository.ts'
+import {
+  BankRepository,
+  BankRepositoryDataBase,
+} from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
+import { DatabaseConnection } from '@infra/database/DataBaseConnetion.ts'
 
-import { BankRepositoryFake } from '../../moks/BankRepositoryFake.ts'
 let stu: CreateBank
 let bankRepository: BankRepository
 
+let dataBaseConnection: DatabaseConnection
 beforeAll(() => {
-  bankRepository = new BankRepositoryFake()
+  dataBaseConnection = new AdapterMysql(process.env.DATABASE_URL)
+  bankRepository = new BankRepositoryDataBase(dataBaseConnection)
   stu = new CreateBank(bankRepository)
 })
-test('deve  criar um banco (usecase)', async () => {
+test.only('deve  criar um banco (usecase)', async () => {
   const fakeCode = `${Math.random()}`.substring(2, 5)
   const inputCreate = {
     codigo: fakeCode,
@@ -19,7 +25,7 @@ test('deve  criar um banco (usecase)', async () => {
     url: 'teste4.com.br',
   }
   const outPut = await stu.execute(inputCreate)
-
+  console.log(outPut)
   expect(outPut).toBeTruthy()
   expect(outPut?.id).toBe(outPut.id)
   expect(outPut?.codigo).toBe(inputCreate.codigo)

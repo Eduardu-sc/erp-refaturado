@@ -1,3 +1,4 @@
+import { AdapterMysql } from '@infra/database/AdapterMysql.ts'
 import { ApplicationError } from '@infra/database/ApplicationError.ts'
 import { BankRepositoryDataBase } from '@infra/database/bankRepository.ts'
 import { CreateBank } from '@infra/database/CreateBank.ts'
@@ -14,7 +15,10 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-const bankRepository = new BankRepositoryDataBase()
+const bankRepository = new BankRepositoryDataBase(
+  new AdapterMysql(process.env.DATABASE_URL),
+)
+
 app.get('/banco', async (request: Request, response: Response) => {
   const usecase = new GetBankList(bankRepository)
   try {

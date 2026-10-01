@@ -1,15 +1,18 @@
+import { AdapterMysql } from '@infra/database/AdapterMysql.ts'
 import { Bank } from '@infra/database/bank.ts'
 import {
   BankRepository,
   BankRepositoryDataBase,
 } from '@infra/database/bankRepository.ts'
+import { DatabaseConnection } from '@infra/database/DataBaseConnetion.ts'
 import { RemoveBank } from '@infra/database/RemoveBank.ts'
 
 let bankRepository: BankRepository
 let stu: RemoveBank
-
+let dataBaseConnection: DatabaseConnection
 beforeAll(() => {
-  bankRepository = new BankRepositoryDataBase()
+  dataBaseConnection = new AdapterMysql(process.env.DATABASE_URL)
+  bankRepository = new BankRepositoryDataBase(dataBaseConnection)
   stu = new RemoveBank(bankRepository)
 })
 

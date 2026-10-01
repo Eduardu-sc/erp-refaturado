@@ -193,7 +193,7 @@ test.each(['Test'])(
     )
 
     expect(responseUpdate.status).toBe(422)
-    console.log()
+
     const outPutUpdate = responseUpdate.data
     expect(outPutUpdate.code).toBe('DOMAIN_ERROR')
     expect(outPutUpdate.message).toBe('Nome invalido')

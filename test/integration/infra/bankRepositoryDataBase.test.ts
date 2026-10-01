@@ -1,13 +1,16 @@
+import { AdapterMysql } from '@infra/database/AdapterMysql.ts'
 import { Bank } from '@infra/database/bank.ts'
 import {
   BankRepository,
   BankRepositoryDataBase,
 } from '@infra/database/bankRepository.ts'
+import { DatabaseConnection } from '@infra/database/DataBaseConnetion.ts'
 
 let bankRepository: BankRepository
-
+let dataBaseConnection: DatabaseConnection
 beforeEach(() => {
-  bankRepository = new BankRepositoryDataBase()
+  dataBaseConnection = new AdapterMysql(process.env.DATABASE_URL)
+  bankRepository = new BankRepositoryDataBase(dataBaseConnection)
 })
 test('deve salvar um banco', async () => {
   const bank = Bank.create({
@@ -46,25 +49,6 @@ test('deve listar os bancos', async () => {
   expect(bankData?.getCode()).toBe(bankSave?.getCode())
   expect(bankData?.getName()).toBe(bankSave?.getName())
   expect(bankData?.getUrl()).toBe(bankSave?.getUrl())
-
-  await bankRepository.remove(bankSave.getBankId())
-})
-test('deve buscar um banco por id', async () => {
-  const outPutBank = Bank.create({
-    code: '003',
-    name: 'banco buscar id',
-    url: 'buscar.com.br',
-  })
-
-  const bankSave = await bankRepository.save(outPutBank)
-
-  const bankData = await bankRepository.findById(bankSave.getBankId())
-
-  expect(bankData).toBeTruthy()
-  expect(bankData?.getBankId()).toBe(bankSave.getBankId())
-  expect(bankData?.getCode()).toBe(bankSave.getCode())
-  expect(bankData?.getName()).toBe(bankSave.getName())
-  expect(bankData?.getUrl()).toBe(bankSave.getUrl())
 
   await bankRepository.remove(bankSave.getBankId())
 })
@@ -125,4 +109,47 @@ test('deve buscar um banco por codigo', async () => {
   expect(bankData?.getUrl()).toBe(bankSaved.getUrl())
 
   await bankRepository.remove(bankSaved.getBankId())
+})
+test('deve buscar um banco por id', async () => {
+  const outPutBank = Bank.create({
+    code: '003',
+    name: 'banco buscar id',
+    url: 'buscar.com.br',
+  })
+
+  const bankSave = await bankRepository.save(outPutBank)
+
+  const bankData = await bankRepository.findById(bankSave.getBankId())
+
+  expect(bankData).toBeTruthy()
+  expect(bankData?.getBankId()).toBe(bankSave.getBankId())
+  expect(bankData?.getCode()).toBe(bankSave.getCode())
+  expect(bankData?.getName()).toBe(bankSave.getName())
+  expect(bankData?.getUrl()).toBe(bankSave.getUrl())
+
+  await bankRepository.remove(bankSave.getBankId())
+})
+test('deve buscar um banco por nome', async () => {
+  const outPutBank = Bank.create({
+    code: '003',
+    name: 'banco buscar id',
+    url: 'buscar.com.br',
+  })
+
+  const bankSave = await bankRepository.save(outPutBank)
+
+  const bankData = await bankRepository.findByName(bankSave.getName())
+
+  expect(bankData).toBeTruthy()
+  expect(bankData?.getBankId()).toBe(bankSave.getBankId())
+  expect(bankData?.getCode()).toBe(bankSave.getCode())
+  expect(bankData?.getName()).toBe(bankSave.getName())
+  expect(bankData?.getUrl()).toBe(bankSave.getUrl())
+
+  await bankRepository.remove(bankSave.getBankId())
+})
+test('deve buscar um banco por nome e retornar indefinido', async () => {
+  const bankData = await bankRepository.findByName('tess tes tes te ste')
+
+  expect(bankData).toBe(undefined)
 })
